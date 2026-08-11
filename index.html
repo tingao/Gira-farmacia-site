@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GIRA — Controle de Estoque &amp; Planograma | Farmácia</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">GIRA <span>Demand Loop · Fase 1 — Controle de Estoque e Planograma</span></div>
+  <div class="brick-info">
+    <strong id="brick-nome"></strong>
+    <span id="farmacia-cliente"></span>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="resumo" class="active">Resumo Executivo</button>
+  <button data-tab="acoes">O que usar / o que não usar</button>
+  <button data-tab="planograma">Planograma Sugerido</button>
+  <button data-tab="gap">Match &amp; Gap</button>
+  <button data-tab="visual">Planograma Visual</button>
+  <button data-tab="parametros">Parâmetros</button>
+</nav>
+
+<main>
+
+  <!-- ============ RESUMO EXECUTIVO ============ -->
+  <section class="tab-panel active" id="tab-resumo">
+    <div class="card">
+      <h2>Resumo Executivo</h2>
+      <p class="subtitulo">Indicadores operacionais e ponte de receita da categoria antiácidos — <strong id="resumo-farmacia"></strong></p>
+      <div class="kpis" id="kpis-operacionais"></div>
+    </div>
+    <div class="card">
+      <h3>Ponte de receita mensal (R$)</h3>
+      <div class="ponte" id="ponte-receita"></div>
+      <p class="nota" id="nota-ponte"></p>
+    </div>
+  </section>
+
+  <!-- ============ O QUE USAR / O QUE NÃO USAR ============ -->
+  <section class="tab-panel" id="tab-acoes">
+    <div class="card">
+      <h2>O que usar e o que não usar — decisões do planograma</h2>
+      <p class="subtitulo">Listas prontas para o dia a dia: o que repor com urgência, o que pedir na semana, o que parar de comprar e o que não entra no mix.</p>
+      <div class="acoes" id="listas-acoes"></div>
+      <p class="nota">Os pedidos respeitam o múltiplo de caixa do fornecedor e o ciclo de entrega do distribuidor (1x/semana). Estoque e parâmetros são editáveis nas abas <em>Planograma Sugerido</em> e <em>Parâmetros</em> — tudo recalcula na hora.</p>
+    </div>
+  </section>
+
+  <!-- ============ PLANOGRAMA SUGERIDO ============ -->
+  <section class="tab-panel" id="tab-planograma">
+    <div class="card">
+      <h2>Planograma Sugerido — motor de decisão SKU a SKU</h2>
+      <p class="subtitulo">Edite o <strong>estoque atual</strong> para ver a recomendação mudar na hora. Use os filtros para focar o que importa.</p>
+      <div class="filtros">
+        <select id="filtro-classificacao"><option value="">Classificação: todas</option></select>
+        <select id="filtro-classe"><option value="">Classe ABC: todas</option></select>
+        <select id="filtro-estoque"><option value="">Status de estoque: todos</option></select>
+        <select id="filtro-marca"><option value="">Marca: todas</option></select>
+        <button class="btn btn-imprimir" id="btn-imprimir-plano">Imprimir / PDF</button>
+      </div>
+      <div class="tabela-wrap" id="tabela-planograma"></div>
+    </div>
+  </section>
+
+  <!-- ============ MATCH & GAP ============ -->
+  <section class="tab-panel" id="tab-gap">
+    <div class="card">
+      <h2>Match &amp; Gap de Mix — Farmácia vs. mercado (brick)</h2>
+      <p class="subtitulo">Demanda total do brick comparada com as vendas atuais da farmácia. O status espelha exatamente a decisão do Planograma (mesma cor, mesmo texto).</p>
+      <div class="tabela-wrap" id="tabela-gap"></div>
+      <p class="nota">A <strong>oportunidade em R$</strong> soma somente SKUs que passam a existir no mix (Incluir/Monitorar), usando a projeção por fair share + rampa de entrada. O gap de SKUs que a farmácia já vende é execução/competição — não entra na receita projetada.</p>
+    </div>
+  </section>
+
+  <!-- ============ PLANOGRAMA VISUAL ============ -->
+  <section class="tab-panel" id="tab-visual">
+    <div class="card">
+      <h2>Planograma Visual — execução em loja</h2>
+      <p class="subtitulo">Prateleiras por forma farmacêutica. A cor de fundo indica a classe ABC (verde = A, amarelo = B, azul = C); o número é a quantidade sugerida de pedido.</p>
+      <div class="legenda" id="legenda-abc"></div>
+      <div id="prateleiras"></div>
+      <p style="margin-top:14px"><button class="btn btn-imprimir" id="btn-imprimir-visual">Imprimir planograma / PDF</button></p>
+    </div>
+  </section>
+
+  <!-- ============ PARÂMETROS ============ -->
+  <section class="tab-panel" id="tab-parametros">
+    <div class="card">
+      <h2>Configuração de parâmetros do modelo</h2>
+      <p class="subtitulo">Altere as premissas para recalcular todo o modelo na hora. O <strong>Fator de Calibração</strong> é sempre calculado.</p>
+      <div class="params-grid" id="parametros-form"></div>
+    </div>
+    <div class="card">
+      <h3>Referência de mercado nacional</h3>
+      <div id="mercado-nacional"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>GIRA — Especificação Funcional Fase 1 · Protótipo de referência: GIRA_Simulacao_Brick_Antiacidos.xlsx · Dados simulados (marcas fictícias, preços calibrados por PMC CMED).</footer>
+
+<script src="js/data.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
