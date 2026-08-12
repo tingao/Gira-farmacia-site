@@ -2,7 +2,18 @@
 
 Ferramenta web de otimização de ponto de venda para farmácias — **Demand Loop, Fase 1: Planograma Desejado**.
 
-Site 100% estático (sem build, sem servidor) — hospedado via GitHub Pages. Abra `index.html` ou use a URL pública acima.
+Site 100% estático (sem build, sem servidor) — hospedado via GitHub Pages.
+
+## Acesso (mock)
+
+O site abre com uma tela de login **mock** (client-side, apenas demonstração — não é segurança real):
+
+```
+Usuário: gira@email.com
+Senha:   azulpatoimpossível
+```
+
+Qualquer outra combinação é recusada. A sessão fica ativa na aba (sessionStorage) enquanto o navegador estiver aberto; o botão **Sair** no topo encerra e volta ao login.
 
 ## Funcionalidades
 
@@ -20,7 +31,7 @@ index.html        interface
 css/style.css     estilos (com regras de impressão)
 js/data.js        dados de demonstração: catálogo de SKUs, pesos por farmácia, referência de mercado
 js/engine.js      motor de cálculo (Demanda do Brick, Match & Gap, Planograma Sugerido, Resumo Executivo)
-js/app.js         estado, renderização e eventos
+js/app.js         estado, renderização, eventos e login mock
 img/              fotos dos produtos (512×512)
 ```
 

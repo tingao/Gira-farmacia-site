@@ -6,7 +6,21 @@
 <title>GIRA — Controle de Estoque &amp; Planograma | Farmácia</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="locked">
+
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-brand">GIRA</div>
+    <p class="login-sub">Controle de Estoque &amp; Planograma · Fase 1</p>
+    <p class="login-aviso">Acesso de demonstração (mock) — apenas credenciais fornecidas pela equipe.</p>
+    <label for="login-user">Usuário (e-mail)</label>
+    <input type="email" id="login-user" autocomplete="username" placeholder="gira@email.com" spellcheck="false">
+    <label for="login-pass">Senha</label>
+    <input type="password" id="login-pass" autocomplete="current-password">
+    <p class="login-erro" id="login-erro" hidden>Usuário ou senha incorretos.</p>
+    <button type="button" id="btn-login" class="btn-login">Entrar</button>
+  </div>
+</div>
 
 <header class="topbar">
   <div class="brand">GIRA <span>Demand Loop · Fase 1 — Controle de Estoque e Planograma</span></div>
@@ -14,6 +28,7 @@
     <strong id="brick-nome"></strong>
     <span id="farmacia-cliente"></span>
   </div>
+  <button type="button" id="btn-logout" class="btn-logout" hidden>Sair</button>
 </header>
 
 <nav class="tabs" id="tabs">
