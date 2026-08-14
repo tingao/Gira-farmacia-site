@@ -19,6 +19,8 @@ Qualquer outra combinação é recusada. A sessão fica ativa na aba (sessionSto
 
 - **Resumo Executivo** — KPIs operacionais e ponte de receita (atual → potencial, com uplift projetado).
 - **O que usar / o que não usar** — listas prontas: repor com urgência (risco de ruptura), pedido semanal sugerido, parar de comprar (remover/excesso), não entrar no mix.
+- **Antes (gôndola atual)** — render da gôndola atual da farmácia: as fotos reais dos produtos posicionadas nas prateleiras por forma farmacêutica (estilo OPENCatman), com badge de estoque.
+- **Antes & Depois** — comparação lado a lado: mix atual vs. planograma sugerido pelo GIRA (Manter/Incluir/Monitorar), com facings por classe ABC (A=4, B=3, C=2) e quantidade sugerida de pedido.
 - **Planograma Sugerido** — motor de decisão SKU a SKU: classificação (Manter/Incluir/Monitorar/Não incluir/Remover), curva ABC de giro, cobertura-alvo por classe, recomendação de estoque e quantidade sugerida de pedido (respeitando o múltiplo de caixa do fornecedor). Estoque atual editável — tudo recalcula na hora.
 - **Match & Gap** — comparação da demanda do brick com as vendas da farmácia.
 - **Planograma Visual** — prateleiras por forma farmacêutica, com foto do produto e cor por classe ABC, pronto para impressão.

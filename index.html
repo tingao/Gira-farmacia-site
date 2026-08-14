@@ -36,6 +36,8 @@
   <button data-tab="acoes">O que usar / o que não usar</button>
   <button data-tab="planograma">Planograma Sugerido</button>
   <button data-tab="gap">Match &amp; Gap</button>
+  <button data-tab="antes">Antes (gôndola atual)</button>
+  <button data-tab="antes-depois">Antes &amp; Depois</button>
   <button data-tab="visual">Planograma Visual</button>
   <button data-tab="parametros">Parâmetros</button>
 </nav>
@@ -89,6 +91,35 @@
       <p class="subtitulo">Demanda total do brick comparada com as vendas atuais da farmácia. O status espelha exatamente a decisão do Planograma (mesma cor, mesmo texto).</p>
       <div class="tabela-wrap" id="tabela-gap"></div>
       <p class="nota">A <strong>oportunidade em R$</strong> soma somente SKUs que passam a existir no mix (Incluir/Monitorar), usando a projeção por fair share + rampa de entrada. O gap de SKUs que a farmácia já vende é execução/competição — não entra na receita projetada.</p>
+    </div>
+  </section>
+
+  <!-- ============ ANTES (GÔNDOLA ATUAL) ============ -->
+  <section class="tab-panel" id="tab-antes">
+    <div class="card">
+      <h2>Antes — a gôndola atual da farmácia</h2>
+      <p class="subtitulo">Representação do sortimento atual (16 SKUs) com as fotos reais dos produtos, organizados nas prateleiras por forma farmacêutica — como OPENCatman renderiza um planograma.</p>
+      <div class="prateleiras-render" id="prateleiras-antes"></div>
+      <p class="nota">Os produtos são posicionados com base no mix atual em estoque (badge = unidades em mãos). Quando a foto real da gôndola estiver disponível, ela pode substituir esta representação.</p>
+    </div>
+  </section>
+
+  <!-- ============ ANTES & DEPOIS ============ -->
+  <section class="tab-panel" id="tab-antes-depois">
+    <div class="card">
+      <h2>Antes &amp; Depois — como a gôndola fica com o planograma sugerido</h2>
+      <p class="subtitulo">Compare lado a lado: à esquerda o mix atual; à direita o planograma sugerido pelo GIRA (Manter/Incluir/Monitorar), com <strong>facings por classe ABC</strong> (A=4, B=3, C=2) e a quantidade sugerida de pedido.</p>
+      <div class="comparacao">
+        <div class="lado">
+          <h3>Antes (atual)</h3>
+          <div class="prateleiras-render" id="prateleiras-antes-c"></div>
+        </div>
+        <div class="lado">
+          <h3>Depois (sugerido)</h3>
+          <div class="prateleiras-render" id="prateleiras-depois-c"></div>
+        </div>
+      </div>
+      <p class="nota">A prateleira de <em>Pó solúvel</em> some no "Depois": o único SKU dessa forma (Genérico Bicarbonato de Sódio) foi classificado como <strong>Não incluir</strong>. SKUs <strong>Remover</strong> (Bufferex 120ml/240ml) saem da gôndola no planograma sugerido.</p>
     </div>
   </section>
 

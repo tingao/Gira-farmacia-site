@@ -77,6 +77,17 @@ const FORMA_LABEL = {
   'PO SL': 'Pó solúvel',
 };
 
+/* Dimensões aproximadas (px) por forma farmacêutica — usadas no render de prateleira */
+const FORMA_DIM = {
+  'PO EFEV': { w: 62, h: 96 },
+  'COM MAST': { w: 56, h: 82 },
+  'SUSP OR': { w: 46, h: 112 },
+  'PO SL': { w: 62, h: 90 },
+};
+
+/* Facings por classe ABC no planograma sugerido */
+const FACINGS_ABC = { A: 4, B: 3, C: 2 };
+
 const CLASSIFICACAO_INFO = {
   Manter:      { cor: '#2e7d32', bg: '#e6f4ea', label: 'Manter',       texto: 'Já no mix — manter e reabastecer' },
   Incluir:     { cor: '#1565c0', bg: '#e3f0fb', label: 'Incluir',      texto: 'Novo no mix — oportunidade validada pela demanda do brick' },

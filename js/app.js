@@ -75,6 +75,8 @@
     renderPlanograma();
     renderGap();
     renderVisual();
+    renderAntes();
+    renderAntesDepois();
     renderParametros();
   }
 
@@ -350,6 +352,74 @@
       shelf.appendChild(grid);
       cont.appendChild(shelf);
     }
+  }
+
+  /* ---------- Antes / Antes & Depois (render de prateleira estilo OPENCatman) ---------- */
+  function prateleiraProduto(l, facing, metaHtml) {
+    const dim = FORMA_DIM[l.sk.forma] || { w: 56, h: 90 };
+    const g = el('div', 'f-grupo');
+    const facings = el('div', 'f-facings');
+    for (let i = 0; i < facing; i++) {
+      const p = el('div', 'f-prod');
+      p.style.width = dim.w + 'px';
+      p.style.height = dim.h + 'px';
+      if (l.sk.foto) {
+        const img = el('img', null, '');
+        img.src = l.sk.foto;
+        img.alt = l.sk.produto;
+        img.loading = 'lazy';
+        p.appendChild(img);
+      } else {
+        p.classList.add('f-prod-ph');
+        p.textContent = l.sk.sku;
+      }
+      facings.appendChild(p);
+    }
+    g.appendChild(facings);
+    g.appendChild(el('div', 'f-nome', l.sk.produto));
+    g.appendChild(el('div', 'f-meta', metaHtml));
+    return g;
+  }
+
+  function renderPrateleiras(elId, linhas, opts) {
+    const cont = $(elId);
+    cont.innerHTML = '';
+    const porForma = {};
+    for (const l of linhas) (porForma[l.sk.forma] = porForma[l.sk.forma] || []).push(l);
+    for (const forma of state.out.ordemFormas) {
+      const lista = porForma[forma];
+      if (!lista || !lista.length) continue;
+      const shelf = el('div', 'prateleira-render');
+      const totFacings = lista.reduce((a, l) => a + opts.facing(l), 0);
+      const cab = el('div', 'cabecalho', `${FORMA_LABEL[forma] || forma} <span>${lista.length} produtos · ${totFacings} facings</span>`);
+      shelf.appendChild(cab);
+      const gondola = el('div', 'gondola');
+      const prateleira = el('div', 'prateleira');
+      for (const l of lista) prateleira.appendChild(prateleiraProduto(l, opts.facing(l), opts.meta(l)));
+      gondola.appendChild(prateleira);
+      shelf.appendChild(gondola);
+      cont.appendChild(shelf);
+    }
+  }
+
+  function renderAntes() {
+    const { linhas } = state.out;
+    const atuais = [...linhas].sort((a, b) => (b.estoque - a.estoque) || a.sk.sku.localeCompare(b.sk.sku));
+    const opts = {
+      facing: () => 2,
+      meta: (l) => `estoque ${l.estoque} UN`,
+    };
+    renderPrateleiras('#prateleiras-antes', atuais, opts);
+    renderPrateleiras('#prateleiras-antes-c', atuais, opts);
+  }
+
+  function renderAntesDepois() {
+    const { linhas } = state.out;
+    const sugerido = linhas.filter((l) => l.K === 'Manter' || l.K === 'Incluir' || l.K === 'Monitorar');
+    renderPrateleiras('#prateleiras-depois-c', sugerido, {
+      facing: (l) => FACINGS_ABC[l.classe] || 2,
+      meta: (l) => `${badgeABC(l.classe)} ${l.U > 0 ? `· pedir ${l.U} UN` : (l.K === 'Manter' ? '· ok' : '· entrada')}`,
+    });
   }
 
   /* ---------- Parâmetros ---------- */
