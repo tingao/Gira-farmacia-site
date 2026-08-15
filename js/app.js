@@ -354,52 +354,118 @@
     }
   }
 
-  /* ---------- Antes / Antes & Depois (render de prateleira estilo OPENCatman) ---------- */
-  function prateleiraProduto(l, facing, metaHtml) {
-    const dim = FORMA_DIM[l.sk.forma] || { w: 56, h: 90 };
-    const g = el('div', 'f-grupo');
-    const facings = el('div', 'f-facings');
-    for (let i = 0; i < facing; i++) {
-      const p = el('div', 'f-prod');
-      p.style.width = dim.w + 'px';
-      p.style.height = dim.h + 'px';
-      if (l.sk.foto) {
-        const img = el('img', null, '');
-        img.src = l.sk.foto;
-        img.alt = l.sk.produto;
-        img.loading = 'lazy';
-        p.appendChild(img);
-      } else {
-        p.classList.add('f-prod-ph');
-        p.textContent = l.sk.sku;
-      }
-      facings.appendChild(p);
-    }
-    g.appendChild(facings);
-    g.appendChild(el('div', 'f-nome', l.sk.produto));
-    g.appendChild(el('div', 'f-meta', metaHtml));
-    return g;
-  }
+  /* ---------- Antes / Antes & Depois (gôndola SVG estilo OPENCatman) ---------- */
+  const escXml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const trunc = (s, n) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
 
-  function renderPrateleiras(elId, linhas, opts) {
-    const cont = $(elId);
-    cont.innerHTML = '';
+  function gondolaSVG(linhas, opts) {
+    const W = 1120, SIDE = 26, TOP = 46, BASE = 34;
+    const INNER = W - 2 * SIDE;
     const porForma = {};
     for (const l of linhas) (porForma[l.sk.forma] = porForma[l.sk.forma] || []).push(l);
-    for (const forma of state.out.ordemFormas) {
+    const formas = state.out.ordemFormas.filter((f) => porForma[f] && porForma[f].length);
+
+    // layout das prateleiras (escala para caber na largura interna)
+    const shelves = formas.map((forma) => {
       const lista = porForma[forma];
-      if (!lista || !lista.length) continue;
-      const shelf = el('div', 'prateleira-render');
-      const totFacings = lista.reduce((a, l) => a + opts.facing(l), 0);
-      const cab = el('div', 'cabecalho', `${FORMA_LABEL[forma] || forma} <span>${lista.length} produtos · ${totFacings} facings</span>`);
-      shelf.appendChild(cab);
-      const gondola = el('div', 'gondola');
-      const prateleira = el('div', 'prateleira');
-      for (const l of lista) prateleira.appendChild(prateleiraProduto(l, opts.facing(l), opts.meta(l)));
-      gondola.appendChild(prateleira);
-      shelf.appendChild(gondola);
-      cont.appendChild(shelf);
+      const dims = lista.map((l) => FORMA_DIM[l.sk.forma] || { w: 56, h: 90 });
+      const hMax = Math.max(...dims.map((d) => d.h));
+      const items = lista.map((l, i) => ({ l, w: dims[i].w, h: dims[i].h, facings: opts.facing(l) }));
+      const rawW = items.reduce((a, it) => a + it.facings * it.w + (it.facings - 1) * 2 + 28, 0);
+      const scale = Math.min(1, (INNER - 40) / rawW);
+      let x = 0;
+      for (const it of items) {
+        it.w *= scale; it.h *= scale;
+        it.gw = it.facings * it.w + (it.facings - 1) * 2;
+        it.x = x; x += it.gw + 28;
+      }
+      const used = x - 28;
+      const startX = SIDE + (INNER - used) / 2;
+      for (const it of items) it.x += startX;
+      return { forma, items, hMax: hMax * scale };
+    });
+
+    let y = TOP + 8;
+    for (const s of shelves) {
+      s.y0 = y;
+      s.boardY = y + s.hMax + 8;
+      s.railY = s.boardY + 14;
+      s.height = s.hMax + 8 + 14 + 30;
+      y += s.height + 12;
     }
+    const H = y + BASE + 4;
+
+    const totProdutos = linhas.length;
+    const totFacings = linhas.reduce((a, l) => a + opts.facing(l), 0);
+    let svg = `<svg class="gondola-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gondola: ${escXml(opts.titulo)} — ${totProdutos} produtos, ${totFacings} facings">`;
+    svg += `<defs>
+      <linearGradient id="backG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#faf9f6"/><stop offset="0.55" stop-color="#efece5"/><stop offset="1" stop-color="#e2ddd2"/>
+      </linearGradient>
+      <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#4f5863"/><stop offset="0.5" stop-color="#7d8792"/><stop offset="1" stop-color="#474f59"/>
+      </linearGradient>
+      <linearGradient id="boardTop" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#edf0f3"/>
+      </linearGradient>
+      <filter id="prodShadow" x="-30%" y="-30%" width="160%" height="180%">
+        <feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#000" flood-opacity="0.22"/>
+      </filter>
+      <filter id="shelfShadow" x="-10%" y="-60%" width="120%" height="200%">
+        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.14"/>
+      </filter>
+    </defs>`;
+    // fundo da gôndola + luz de teto
+    svg += `<rect x="${SIDE}" y="${TOP}" width="${INNER}" height="${H - TOP - BASE}" fill="url(#backG)"/>`;
+    svg += `<ellipse cx="${W / 2}" cy="${TOP + 10}" rx="${INNER / 2.4}" ry="40" fill="#ffffff" opacity="0.55"/>`;
+
+    for (const s of shelves) {
+      const fLabel = FORMA_LABEL[s.forma] || s.forma;
+      // produtos (com sombra e card)
+      for (const it of s.items) {
+        let x = it.x;
+        for (let f = 0; f < it.facings; f++) {
+          svg += `<g filter="url(#prodShadow)"><title>${escXml(it.l.sk.produto)} — ${escXml(opts.meta(it.l))}</title>`;
+          svg += `<rect x="${x}" y="${s.y0}" width="${it.w}" height="${it.h}" rx="3" fill="#ffffff" stroke="#d8d4ca" stroke-width="1"/>`;
+          if (it.l.sk.foto) {
+            svg += `<image href="${escXml(it.l.sk.foto)}" x="${x + 2}" y="${s.y0 + 2}" width="${it.w - 4}" height="${it.h - 4}" preserveAspectRatio="xMidYMid meet"/>`;
+          } else {
+            svg += `<rect x="${x + 2}" y="${s.y0 + 2}" width="${it.w - 4}" height="${it.h - 4}" rx="2" fill="#f1f3f4" stroke="#dde1e5" stroke-width="0.75"/>`;
+            svg += `<text x="${x + it.w / 2}" y="${s.y0 + it.h / 2 + 3}" font-size="9" font-weight="700" fill="#9aa0a6" text-anchor="middle">${escXml(it.l.sk.sku)}</text>`;
+          }
+          svg += `</g>`;
+          x += it.w + 2;
+        }
+      }
+      // prateleira (face superior + frente metálica)
+      svg += `<g filter="url(#shelfShadow)">`;
+      svg += `<rect x="${SIDE}" y="${s.boardY}" width="${INNER}" height="8" fill="url(#boardTop)"/>`;
+      svg += `<rect x="${SIDE}" y="${s.boardY + 8}" width="${INNER}" height="6" fill="#c6ccd3"/>`;
+      svg += `<rect x="${SIDE}" y="${s.boardY + 13}" width="${INNER}" height="1" fill="#98a0a8"/>`;
+      svg += `</g>`;
+      // trilho de etiquetas
+      svg += `<rect x="${SIDE}" y="${s.railY}" width="${INNER}" height="30" rx="2" fill="#31404e"/>`;
+      svg += `<rect x="${SIDE}" y="${s.railY}" width="6" height="30" fill="#1f2933"/>`;
+      svg += `<text x="${SIDE + 14}" y="${s.railY + 19}" font-size="11.5" font-weight="800" fill="#d7e0e8" letter-spacing="0.5">${escXml(fLabel.toUpperCase())}</text>`;
+      for (const it of s.items) {
+        const cx = it.x + it.gw / 2;
+        svg += `<text x="${cx}" y="${s.railY + 15}" font-size="9.5" font-weight="600" fill="#eef3f7" text-anchor="middle">${escXml(trunc(it.l.sk.produto, 15))}</text>`;
+        svg += `<text x="${cx}" y="${s.railY + 27}" font-size="8.5" fill="#9fb2c2" text-anchor="middle">${escXml(opts.rail(it.l))}</text>`;
+      }
+    }
+
+    // estrutura metálica (laterais, topo, base)
+    svg += `<rect x="0" y="0" width="${SIDE}" height="${H}" fill="url(#metal)"/>`;
+    svg += `<rect x="${W - SIDE}" y="0" width="${SIDE}" height="${H}" fill="url(#metal)"/>`;
+    svg += `<rect x="0" y="0" width="${W}" height="${TOP}" fill="url(#metal)"/>`;
+    svg += `<rect x="0" y="${H - BASE}" width="${W}" height="${BASE}" fill="url(#metal)"/>`;
+    svg += `<text x="${W / 2}" y="${TOP / 2 + 5}" font-size="14" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1.5">${escXml(opts.titulo)}</text>`;
+    svg += `</svg>`;
+    return svg;
+  }
+
+  function renderGondola(elId, linhas, opts) {
+    $(elId).innerHTML = gondolaSVG(linhas, opts);
   }
 
   function renderAntes() {
@@ -408,17 +474,21 @@
     const opts = {
       facing: () => 2,
       meta: (l) => `estoque ${l.estoque} UN`,
+      rail: (l) => `estoque ${l.estoque} UN`,
+      titulo: 'GÔNDOLA ATUAL — ANTES',
     };
-    renderPrateleiras('#prateleiras-antes', atuais, opts);
-    renderPrateleiras('#prateleiras-antes-c', atuais, opts);
+    renderGondola('#prateleiras-antes', atuais, opts);
+    renderGondola('#prateleiras-antes-c', atuais, { ...opts, titulo: 'ANTES (ATUAL)' });
   }
 
   function renderAntesDepois() {
     const { linhas } = state.out;
     const sugerido = linhas.filter((l) => l.K === 'Manter' || l.K === 'Incluir' || l.K === 'Monitorar');
-    renderPrateleiras('#prateleiras-depois-c', sugerido, {
+    renderGondola('#prateleiras-depois-c', sugerido, {
       facing: (l) => FACINGS_ABC[l.classe] || 2,
-      meta: (l) => `${badgeABC(l.classe)} ${l.U > 0 ? `· pedir ${l.U} UN` : (l.K === 'Manter' ? '· ok' : '· entrada')}`,
+      meta: (l) => `${l.K} · classe ${l.classe || '-'} · ${l.U > 0 ? 'pedir ' + l.U + ' UN' : (l.K === 'Manter' ? 'estoque ok' : 'entrada')}`,
+      rail: (l) => (l.U > 0 ? `pedir ${l.U} UN` : (l.K === 'Manter' ? 'ok' : 'entrada')) + ` · ${l.classe || '-'}`,
+      titulo: 'PLANOGRAMA SUGERIDO — DEPOIS',
     });
   }
 
