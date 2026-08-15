@@ -378,13 +378,13 @@
     // ordem visual de cima para baixo
     const prateleiras = [
       { id: 'top', label: 'PRATELEIRA 1 · TOPO', items: topo },
-      { id: 'eye-1', label: 'PRATELEIRA 2 · NÍVEL DOS OLHOS — MAIS VENDIDOS', items: eye.filter((_, i) => i % 2 === 0) },
-      { id: 'eye-2', label: 'PRATELEIRA 3 · NÍVEL DOS OLHOS — MAIS VENDIDOS', items: eye.filter((_, i) => i % 2 === 1) },
-      { id: 'base', label: 'PRATELEIRA 4 · BASE — MENOR GIRO', items: base },
+      { id: 'eye-1', label: 'PRATELEIRA 2 · NÍVEL DOS OLHOS', items: eye.filter((_, i) => i % 2 === 0) },
+      { id: 'eye-2', label: 'PRATELEIRA 3 · NÍVEL DOS OLHOS', items: eye.filter((_, i) => i % 2 === 1) },
+      { id: 'base', label: 'PRATELEIRA 4 · BASE', items: base },
     ].filter((p) => p.items.length > 0);
 
     // layout das prateleiras (escala para caber na largura interna)
-    const shelves = prateleiras.map((p) => {
+    const shelves = prateleiras.map((p, idx) => {
       const lista = p.items;
       const dims = lista.map((l) => FORMA_DIM[l.sk.forma] || { w: 56, h: 90 });
       const hMax = Math.max(...dims.map((d) => d.h));
@@ -400,7 +400,7 @@
       const used = x - 28;
       const startX = SIDE + (INNER - used) / 2;
       for (const it of items) it.x += startX;
-      return { ...p, items, hMax: hMax * scale };
+      return { ...p, items, hMax: hMax * scale, labelW: Math.ceil(p.label.length * 6.6) + 26, idx };
     });
 
     let y = TOP + 8;
@@ -431,8 +431,13 @@
       </filter>
       <filter id="${uid}shelfShadow" x="-10%" y="-60%" width="120%" height="200%">
         <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.14"/>
-      </filter>
-    </defs>`;
+      </filter>`;
+    // recorte do trilho de etiquetas: nomes nunca invadem a caixa do rótulo da prateleira
+    for (let i = 0; i < shelves.length; i++) {
+      const s = shelves[i];
+      svg += `<clipPath id="${uid}clip${i}"><rect x="${SIDE + s.labelW}" y="${s.railY - 2}" width="${Math.max(0, INNER - s.labelW)}" height="36"/></clipPath>`;
+    }
+    svg += `</defs>`;
     // fundo da gôndola + luz de teto
     svg += `<rect x="${SIDE}" y="${TOP}" width="${INNER}" height="${H - TOP - BASE}" fill="url(#${uid}backG)"/>`;
     svg += `<ellipse cx="${W / 2}" cy="${TOP + 10}" rx="${INNER / 2.4}" ry="40" fill="#ffffff" opacity="0.55"/>`;
@@ -461,15 +466,18 @@
       svg += `<rect x="${SIDE}" y="${s.boardY + 8}" width="${INNER}" height="6" fill="#c6ccd3"/>`;
       svg += `<rect x="${SIDE}" y="${s.boardY + 13}" width="${INNER}" height="1" fill="#98a0a8"/>`;
       svg += `</g>`;
-      // trilho de etiquetas
+      // trilho de etiquetas: caixa do rótulo à esquerda; nomes recortados para nunca sobrepor
       svg += `<rect x="${SIDE}" y="${s.railY}" width="${INNER}" height="30" rx="2" fill="#31404e"/>`;
-      svg += `<rect x="${SIDE}" y="${s.railY}" width="6" height="30" fill="#1f2933"/>`;
-      svg += `<text x="${SIDE + 14}" y="${s.railY + 19}" font-size="11.5" font-weight="800" fill="#d7e0e8" letter-spacing="0.5">${escXml(fLabel.toUpperCase())}</text>`;
+      svg += `<rect x="${SIDE}" y="${s.railY}" width="${s.labelW}" height="30" fill="#22303c"/>`;
+      svg += `<rect x="${SIDE}" y="${s.railY}" width="4" height="30" fill="#1f2933"/>`;
+      svg += `<text x="${SIDE + 12}" y="${s.railY + 19}" font-size="11" font-weight="800" fill="#e8eef3" letter-spacing="0.4">${escXml(fLabel.toUpperCase())}</text>`;
+      svg += `<g clip-path="url(#${uid}clip${s.idx})">`;
       for (const it of s.items) {
         const cx = it.x + it.gw / 2;
         svg += `<text x="${cx}" y="${s.railY + 15}" font-size="9.5" font-weight="600" fill="#eef3f7" text-anchor="middle">${escXml(trunc(it.l.sk.produto, 15))}</text>`;
         svg += `<text x="${cx}" y="${s.railY + 27}" font-size="8.5" fill="#9fb2c2" text-anchor="middle">${escXml(opts.rail(it.l))}</text>`;
       }
+      svg += `</g>`;
     }
 
     // estrutura metálica (laterais, topo, base)
