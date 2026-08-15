@@ -361,13 +361,29 @@
   function gondolaSVG(linhas, opts) {
     const W = 1120, SIDE = 26, TOP = 46, BASE = 34;
     const INNER = W - 2 * SIDE;
-    const porForma = {};
-    for (const l of linhas) (porForma[l.sk.forma] = porForma[l.sk.forma] || []).push(l);
-    const formas = state.out.ordemFormas.filter((f) => porForma[f] && porForma[f].length);
+    const sortKey = opts.sortKey || ((l) => l.D);
+
+    // Merchandising: mais vendidos no nível dos olhos. Ranking por vendas/demanda,
+    // depois distribuição: 40% melhores → prateleiras 2 e 3 (olhar), 30% → topo, resto → base.
+    const ordenadas = [...linhas].sort((a, b) => (sortKey(b) - sortKey(a)) || a.sk.sku.localeCompare(b.sk.sku));
+    const n = ordenadas.length;
+    const eyeCount = Math.ceil(n * 0.4);
+    const topCount = Math.ceil((n - eyeCount) * 0.5);
+    const eye = ordenadas.slice(0, eyeCount);
+    const topo = ordenadas.slice(eyeCount, eyeCount + topCount);
+    const base = ordenadas.slice(eyeCount + topCount);
+
+    // ordem visual de cima para baixo
+    const prateleiras = [
+      { id: 'top', label: 'PRATELEIRA 1 · TOPO', items: topo },
+      { id: 'eye-1', label: 'PRATELEIRA 2 · NÍVEL DOS OLHOS — MAIS VENDIDOS', items: eye.filter((_, i) => i % 2 === 0) },
+      { id: 'eye-2', label: 'PRATELEIRA 3 · NÍVEL DOS OLHOS — MAIS VENDIDOS', items: eye.filter((_, i) => i % 2 === 1) },
+      { id: 'base', label: 'PRATELEIRA 4 · BASE — MENOR GIRO', items: base },
+    ].filter((p) => p.items.length > 0);
 
     // layout das prateleiras (escala para caber na largura interna)
-    const shelves = formas.map((forma) => {
-      const lista = porForma[forma];
+    const shelves = prateleiras.map((p) => {
+      const lista = p.items;
       const dims = lista.map((l) => FORMA_DIM[l.sk.forma] || { w: 56, h: 90 });
       const hMax = Math.max(...dims.map((d) => d.h));
       const items = lista.map((l, i) => ({ l, w: dims[i].w, h: dims[i].h, facings: opts.facing(l) }));
@@ -382,7 +398,7 @@
       const used = x - 28;
       const startX = SIDE + (INNER - used) / 2;
       for (const it of items) it.x += startX;
-      return { forma, items, hMax: hMax * scale };
+      return { ...p, items, hMax: hMax * scale };
     });
 
     let y = TOP + 8;
@@ -420,7 +436,7 @@
     svg += `<ellipse cx="${W / 2}" cy="${TOP + 10}" rx="${INNER / 2.4}" ry="40" fill="#ffffff" opacity="0.55"/>`;
 
     for (const s of shelves) {
-      const fLabel = FORMA_LABEL[s.forma] || s.forma;
+      const fLabel = s.label;
       // produtos (com sombra e card)
       for (const it of s.items) {
         let x = it.x;
@@ -470,12 +486,13 @@
 
   function renderAntes() {
     const { linhas } = state.out;
-    const atuais = [...linhas].sort((a, b) => (b.estoque - a.estoque) || a.sk.sku.localeCompare(b.sk.sku));
+    const atuais = [...linhas];
     const opts = {
       facing: () => 2,
       meta: (l) => `estoque ${l.estoque} UN`,
       rail: (l) => `estoque ${l.estoque} UN`,
       titulo: 'GÔNDOLA ATUAL — ANTES',
+      sortKey: (l) => l.D, // vendas atuais
     };
     renderGondola('#prateleiras-antes', atuais, opts);
     renderGondola('#prateleiras-antes-c', atuais, { ...opts, titulo: 'ANTES (ATUAL)' });
@@ -489,6 +506,7 @@
       meta: (l) => `${l.K} · classe ${l.classe || '-'} · ${l.U > 0 ? 'pedir ' + l.U + ' UN' : (l.K === 'Manter' ? 'estoque ok' : 'entrada')}`,
       rail: (l) => (l.U > 0 ? `pedir ${l.U} UN` : (l.K === 'Manter' ? 'ok' : 'entrada')) + ` · ${l.classe || '-'}`,
       titulo: 'PLANOGRAMA SUGERIDO — DEPOIS',
+      sortKey: (l) => l.J, // demanda-alvo (giro projetado)
     });
   }
 
