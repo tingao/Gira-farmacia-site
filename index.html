@@ -36,8 +36,9 @@
   <button data-tab="acoes">O que usar / o que não usar</button>
   <button data-tab="planograma">Planograma Sugerido</button>
   <button data-tab="gap">Match &amp; Gap</button>
-  <button data-tab="antes">Antes (gôndola atual)</button>
-  <button data-tab="antes-depois">Antes &amp; Depois</button>
+  <button data-tab="antes">Gôndola atual</button>
+  <button data-tab="sugerida">Gôndola sugerida</button>
+  <button data-tab="atual-sugerida">Gôndola atual e sugerida</button>
   <button data-tab="visual">Planograma Visual</button>
   <button data-tab="parametros">Parâmetros</button>
 </nav>
@@ -94,32 +95,42 @@
     </div>
   </section>
 
-  <!-- ============ ANTES (GÔNDOLA ATUAL) ============ -->
+  <!-- ============ GÔNDOLA ATUAL ============ -->
   <section class="tab-panel" id="tab-antes">
     <div class="card">
-      <h2>Antes — a gôndola atual da farmácia</h2>
+      <h2>Gôndola atual</h2>
       <p class="subtitulo">Os produtos são posicionados por <strong>giro de vendas</strong>: os que vendem mais ficam nas prateleiras no <strong>nível dos olhos</strong>, os de giro médio no topo e os de menor giro na base — como manda a prática de merchandising.</p>
       <div class="gondola-wrap"><div id="prateleiras-antes"></div></div>
       <p class="nota">Ranking pelo volume de vendas atual (badge = unidades em mãos). Quando a foto real da gôndola estiver disponível, ela pode substituir esta representação.</p>
     </div>
   </section>
 
-  <!-- ============ ANTES & DEPOIS ============ -->
-  <section class="tab-panel" id="tab-antes-depois">
+  <!-- ============ GÔNDOLA SUGERIDA ============ -->
+  <section class="tab-panel" id="tab-sugerida">
     <div class="card">
-      <h2>Antes &amp; Depois — como a gôndola fica com o planograma sugerido</h2>
-      <p class="subtitulo">Compare lado a lado: à esquerda o mix atual; à direita o planograma sugerido pelo GIRA (Manter/Incluir/Monitorar), ambos com <strong>os mais vendidos no nível dos olhos</strong>, <strong>facings por classe ABC</strong> (A=4, B=3, C=2) e a quantidade sugerida de pedido.</p>
+      <h2>Gôndola sugerida</h2>
+      <p class="subtitulo">Como a gôndola fica com o planograma do GIRA (Manter/Incluir/Monitorar): <strong>os mais vendidos no nível dos olhos</strong> (ranking por demanda-alvo), <strong>facings por classe ABC</strong> (A=4, B=3, C=2) e a quantidade sugerida de pedido.</p>
+      <div class="gondola-wrap"><div id="prateleiras-sugerida"></div></div>
+      <p class="nota">SKUs classificados como <strong>Remover</strong> (Bufferex 120ml/240ml) e <strong>Não incluir</strong> (Genérico Bicarbonato de Sódio) saem da gôndola no planograma sugerido.</p>
+    </div>
+  </section>
+
+  <!-- ============ GÔNDOLA ATUAL E SUGERIDA ============ -->
+  <section class="tab-panel" id="tab-atual-sugerida">
+    <div class="card">
+      <h2>Gôndola atual e sugerida</h2>
+      <p class="subtitulo">Compare lado a lado, com as duas gôndolas no mesmo tamanho — esta página abre mais larga para comportar a comparação.</p>
       <div class="comparacao">
         <div class="lado">
-          <h3>Antes (atual)</h3>
+          <h3>Gôndola atual</h3>
           <div class="gondola-wrap"><div id="prateleiras-antes-c"></div></div>
         </div>
         <div class="lado">
-          <h3>Depois (sugerido)</h3>
+          <h3>Gôndola sugerida</h3>
           <div class="gondola-wrap"><div id="prateleiras-depois-c"></div></div>
         </div>
       </div>
-      <p class="nota">No "Depois", o ranking do nível dos olhos usa a <strong>demanda-alvo projetada</strong> (giro). SKUs classificados como <strong>Remover</strong> (Bufferex 120ml/240ml) e <strong>Não incluir</strong> (Genérico Bicarbonato de Sódio) saem da gôndola no planograma sugerido.</p>
+      <p class="nota">À esquerda o mix atual (ranking por vendas); à direita o planograma sugerido (ranking por demanda-alvo, facings por ABC e pedido sugerido).</p>
     </div>
   </section>
 
