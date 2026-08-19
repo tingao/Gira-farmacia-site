@@ -159,8 +159,11 @@ export function montarGondola(linhas, opts) {
     items: p.items.map((l) => ({ l, facings: opts.facing(l) })),
   }));
 }
-export const faceEstoque = (e) => (e <= 0 ? 1 : e <= 9 ? 1 : e <= 19 ? 2 : e <= 29 ? 3 : e <= 44 ? 4 : e <= 59 ? 5 : 6);
-export const facePedido = (u) => (u <= 0 ? 1 : u <= 9 ? 2 : u <= 17 ? 3 : u <= 25 ? 4 : u <= 33 ? 5 : 6);
+/* Facings uniformes por produto: todas as prateleiras exibem o mesmo número de
+ * "rows" (imagens) por SKU — o volume de cada um continua visível no selo/badge. */
+export const FACINGS_PADRAO = 2;
+export const faceEstoque = () => FACINGS_PADRAO;
+export const facePedido = () => FACINGS_PADRAO;
 
 export const fmtBRL = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 export const fmtNum = (v, d = 1) => v.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
