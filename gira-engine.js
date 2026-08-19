@@ -176,6 +176,25 @@ export function montarGondola(linhas, opts) {
 
   return prateleiras;
 }
+
+/* Unifica o total de colunas entre várias gôndolas: todas as prateleiras de
+ * todas as gôndolas recebidas ficam com o mesmo total de facings (o maior). */
+export function padronizarColunas(gondolas) {
+  const totalDe = (p) => p.items.reduce((a, it) => a + it.facings, 0);
+  const alvo = Math.max(...gondolas.flat().map(totalDe));
+  for (const g of gondolas) {
+    for (const p of g) {
+      let falta = alvo - totalDe(p);
+      let i = 0;
+      while (falta > 0) {
+        p.items[i % p.items.length].facings += 1;
+        i += 1;
+        falta -= 1;
+      }
+    }
+  }
+  return gondolas;
+}
 /* Facings uniformes por produto: todas as prateleiras exibem o mesmo número de
  * "rows" (imagens) por SKU — o volume de cada um continua visível no selo/badge. */
 export const FACINGS_PADRAO = 2;

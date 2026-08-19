@@ -754,6 +754,8 @@ class Component extends DCLogic {
     });
     const gondolaSugeridaLinhas = out.linhas.filter((l) => l.K === 'Manter' || l.K === 'Incluir' || l.K === 'Monitorar');
     const gondolaSugeridaRaw = E.montarGondola(gondolaSugeridaLinhas, { sortKey: (l) => l.J, facing: (l) => E.facePedido(l.U) });
+    // mesma quantidade de colunas na gôndola atual e na sugerida (comparação alinhada)
+    E.padronizarColunas([gondolaAtualRaw, gondolaSugeridaRaw]);
     const gondolaSugeridaShelves = this.shelvesVM(gondolaSugeridaRaw, (l) => {
       const b = classifBadge(l.K);
       return { cls: b.cls, style: b.style, label: l.U > 0 ? `${l.U} UN` : (l.K === 'Manter' ? 'OK' : 'Novo') };
