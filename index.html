@@ -1,169 +1,822 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GIRA — Controle de Estoque &amp; Planograma | Farmácia</title>
-<link rel="stylesheet" href="css/style.css">
+<meta charset="utf-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%230891b2'/><text x='50' y='68' font-size='52' font-family='Arial' font-weight='800' fill='white' text-anchor='middle'>G</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
 </head>
-<body class="locked">
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/broadsheet-143de932-50cc-4892-98e7-9d679427ad2c/styles.css">
+  <script src="_ds/broadsheet-143de932-50cc-4892-98e7-9d679427ad2c/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; background: var(--color-bg); }
+    @media print {
+      .gira-noprint { display: none !important; }
+      .gira-tabpanel { display: block !important; }
+    }
+  </style>
+</helmet>
 
-<div id="login-screen">
-  <div class="login-card">
-    <div class="login-brand">GIRA</div>
-    <p class="login-sub">Controle de Estoque &amp; Planograma · Fase 1</p>
-    <p class="login-aviso">Acesso de demonstração (mock) — apenas credenciais fornecidas pela equipe.</p>
-    <label for="login-user">Usuário (e-mail)</label>
-    <input type="email" id="login-user" autocomplete="username" placeholder="gira@email.com" spellcheck="false">
-    <label for="login-pass">Senha</label>
-    <input type="password" id="login-pass" autocomplete="current-password">
-    <p class="login-erro" id="login-erro" hidden>Usuário ou senha incorretos.</p>
-    <button type="button" id="btn-login" class="btn-login">Entrar</button>
+<div style="min-height:100vh;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)">
+
+<sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}">
+<div>
+
+  <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ true }}">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:var(--space-6)">
+    <div style="width:100%;max-width:380px;display:flex;flex-direction:column;gap:2px">
+      <div style="font-family:var(--font-heading);font-weight:700;font-size:42px;letter-spacing:-0.02em;line-height:1">GIRA</div>
+      <div style="height:3px;background:var(--color-accent);width:68px;margin:var(--space-2) 0 3px"></div>
+      <div style="height:1px;background:var(--color-divider);margin-bottom:var(--space-4)"></div>
+      <p style="margin:0;font-style:italic;font-size:14.5px;color:color-mix(in srgb, var(--color-text) 72%, transparent)">Controle de Estoque &amp; Planograma · Demand Loop, Fase 1</p>
+      <p style="margin:var(--space-3) 0 var(--space-4);font-size:12px;color:color-mix(in srgb, var(--color-text) 58%, transparent)">Acesso de demonstração (mock) — apenas credenciais fornecidas pela equipe.</p>
+      <div class="field">
+        <label for="gira-login-user">Usuário (e-mail)</label>
+        <input id="gira-login-user" class="input" type="email" autocomplete="username" placeholder="gira@email.com" spellcheck="false" value="{{ loginUser }}" onChange="{{ onLoginUserChange }}" onKeyDown="{{ onLoginKeyDown }}">
+      </div>
+      <div class="field" style="margin-top:var(--space-3)">
+        <label for="gira-login-pass">Senha</label>
+        <input id="gira-login-pass" class="input" type="password" autocomplete="current-password" value="{{ loginPass }}" onChange="{{ onLoginPassChange }}" onKeyDown="{{ onLoginKeyDown }}">
+      </div>
+      <sc-if value="{{ loginError }}" hint-placeholder-val="{{ false }}">
+        <p style="margin:var(--space-2) 0 0;color:var(--color-accent-2-700);font-size:12.5px;font-weight:600">Usuário ou senha incorretos.</p>
+      </sc-if>
+      <button type="button" class="btn btn-primary btn-block" style="margin-top:var(--space-4)" onClick="{{ doLogin }}">Entrar</button>
+    </div>
   </div>
+  </sc-if>
+
+  <sc-if value="{{ authed }}" hint-placeholder-val="{{ false }}">
+  <div>
+
+    <header class="gira-noprint" style="padding:var(--space-6) var(--space-6) 0">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;max-width:1320px;margin:0 auto">
+        <div style="display:flex;align-items:baseline;gap:var(--space-3);flex-wrap:wrap">
+          <span style="font-family:var(--font-heading);font-weight:700;font-size:30px;letter-spacing:-0.02em">GIRA</span>
+          <span style="font-style:italic;font-size:13px;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Demand Loop · Fase 1 — Controle de Estoque e Planograma</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--space-4)">
+          <div style="text-align:right;font-size:12px;line-height:1.4;color:color-mix(in srgb, var(--color-text) 65%, transparent)">
+            <div style="font-weight:700;font-size:13px;color:var(--color-text)">{{ brickNome }}</div>
+            <div>{{ brickFarmaciasStr }}</div>
+          </div>
+          <button type="button" class="btn btn-ghost" onClick="{{ onLogout }}">Sair</button>
+        </div>
+      </div>
+      <div style="height:3px;background:var(--color-accent);margin-top:var(--space-3);max-width:1320px;margin-left:auto;margin-right:auto"></div>
+      <div style="height:1px;background:var(--color-divider);margin-top:2px;max-width:1320px;margin-left:auto;margin-right:auto"></div>
+    </header>
+
+    <nav class="gira-noprint nav" style="max-width:1320px;margin:0 auto;padding-left:var(--space-6);padding-right:var(--space-6);flex-wrap:wrap;position:sticky;top:0;background:var(--color-bg);z-index:20;border-bottom:1px solid var(--color-divider);row-gap:6px">
+      <a href="#" aria-current="{{ tabResumoCurrent }}" onClick="{{ onTabResumo }}">Resumo Executivo</a>
+      <a href="#" aria-current="{{ tabAcoesCurrent }}" onClick="{{ onTabAcoes }}">O que usar / não usar</a>
+      <a href="#" aria-current="{{ tabPlanogramaCurrent }}" onClick="{{ onTabPlanograma }}">Planograma Sugerido</a>
+      <a href="#" aria-current="{{ tabGapCurrent }}" onClick="{{ onTabGap }}">Match &amp; Gap</a>
+      <a href="#" aria-current="{{ tabGondolaAtualCurrent }}" onClick="{{ onTabGondolaAtual }}">Gôndola atual</a>
+      <a href="#" aria-current="{{ tabGondolaSugeridaCurrent }}" onClick="{{ onTabGondolaSugerida }}">Gôndola sugerida</a>
+      <a href="#" aria-current="{{ tabGondolaComparacaoCurrent }}" onClick="{{ onTabGondolaComparacao }}">Gôndola atual e sugerida</a>
+      <a href="#" aria-current="{{ tabVisualCurrent }}" onClick="{{ onTabVisual }}">Planograma Visual</a>
+      <a href="#" aria-current="{{ tabParametrosCurrent }}" onClick="{{ onTabParametros }}">Parâmetros</a>
+    </nav>
+
+    <main style="max-width:1320px;margin:0 auto;padding:var(--space-8) var(--space-6) var(--space-8);display:flex;flex-direction:column;gap:var(--space-4)">
+
+      <!-- ===================== RESUMO EXECUTIVO ===================== -->
+      <sc-if value="{{ tabResumoActive }}" hint-placeholder-val="{{ true }}">
+      <section class="gira-tabpanel" data-screen-label="Resumo Executivo" style="display:flex;flex-direction:column;gap:var(--space-8)">
+        <div>
+          <h2 style="font-size:28px">Resumo Executivo</h2>
+          <p style="margin:0;max-width:680px;color:color-mix(in srgb, var(--color-text) 65%, transparent);font-size:14px">Indicadores operacionais e ponte de receita da categoria antiácidos — <strong>{{ resumoFarmacia }}</strong></p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));gap:var(--space-4) var(--space-6)">
+          <sc-for list="{{ kpiCards }}" as="k" hint-placeholder-count="9">
+            <div style="border-top:1px solid var(--color-divider);padding-top:var(--space-2)">
+              <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ k.rotulo }}</div>
+              <div style="{{ k.valueStyle }}">{{ k.valor }}</div>
+              <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin-top:2px">{{ k.detalhe }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div>
+          <h3 style="font-size:13px;font-family:var(--font-body);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-accent-700);margin-bottom:var(--space-3)">Ponte de receita mensal (R$)</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:var(--space-4)">
+            <sc-for list="{{ ponteItems }}" as="p" hint-placeholder-count="4">
+              <div style="{{ p.boxStyle }}">
+                <div style="font-size:12.5px;color:color-mix(in srgb, var(--color-text) 60%, transparent)">{{ p.rotulo }}</div>
+                <div style="{{ p.valueStyle }}">{{ p.valor }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <p style="margin:var(--space-4) 0 0;font-size:12.5px;font-style:italic;color:color-mix(in srgb, var(--color-text) 60%, transparent);max-width:820px">{{ notaPonte }}</p>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ===================== O QUE USAR / NÃO USAR ===================== -->
+      <sc-if value="{{ tabAcoesActive }}" hint-placeholder-val="{{ false }}">
+      <section class="gira-tabpanel" data-screen-label="O que usar / o que não usar" style="display:flex;flex-direction:column;gap:var(--space-6)">
+        <div>
+          <h2 style="font-size:28px">O que usar e o que não usar</h2>
+          <p style="margin:0;max-width:720px;color:color-mix(in srgb, var(--color-text) 65%, transparent);font-size:14px">Listas prontas para o dia a dia: o que repor com urgência, o que pedir na semana, o que parar de comprar e o que não entra no mix.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:var(--space-6)">
+          <div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--color-accent-2);padding-bottom:var(--space-2)">
+              <h4 style="margin:0;font-size:15px;color:var(--color-accent-2-800)">Repor com urgência</h4>
+              <span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ contagemUrgente }}</span>
+            </div>
+            <sc-if value="{{ temUrgente }}" hint-placeholder-val="{{ true }}">
+              <sc-for list="{{ listaUrgente }}" as="it" hint-placeholder-count="3">
+                <div style="display:flex;justify-content:space-between;gap:var(--space-2);align-items:baseline;padding:var(--space-2) 0;border-bottom:1px solid color-mix(in srgb, var(--color-text) 8%, transparent);font-size:13px">
+                  <span><strong>{{ it.nome }}</strong><br><span style="color:color-mix(in srgb, var(--color-text) 55%, transparent);font-size:11.5px">{{ it.meta }}</span></span>
+                  <span style="font-weight:700;white-space:nowrap;color:var(--color-accent-2-700)">{{ it.qtd }}</span>
+                </div>
+              </sc-for>
+            </sc-if>
+            <sc-if value="{{ !temUrgente }}" hint-placeholder-val="{{ false }}">
+              <p style="padding-top:var(--space-2);font-style:italic;font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Nenhum item nesta lista.</p>
+            </sc-if>
+          </div>
+
+          <div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--color-accent);padding-bottom:var(--space-2)">
+              <h4 style="margin:0;font-size:15px;color:var(--color-accent-700)">Pedido semanal sugerido</h4>
+              <span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ contagemComprar }}</span>
+            </div>
+            <sc-if value="{{ temComprar }}" hint-placeholder-val="{{ true }}">
+              <sc-for list="{{ listaComprar }}" as="it" hint-placeholder-count="6">
+                <div style="display:flex;justify-content:space-between;gap:var(--space-2);align-items:baseline;padding:var(--space-2) 0;border-bottom:1px solid color-mix(in srgb, var(--color-text) 8%, transparent);font-size:13px">
+                  <span><strong>{{ it.nome }}</strong><br><span style="color:color-mix(in srgb, var(--color-text) 55%, transparent);font-size:11.5px">{{ it.meta }}</span></span>
+                  <span style="font-weight:700;white-space:nowrap;color:var(--color-accent-700)">{{ it.qtd }}</span>
+                </div>
+              </sc-for>
+            </sc-if>
+            <sc-if value="{{ !temComprar }}" hint-placeholder-val="{{ false }}">
+              <p style="padding-top:var(--space-2);font-style:italic;font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Nenhum item nesta lista.</p>
+            </sc-if>
+          </div>
+
+          <div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--color-neutral-400);padding-bottom:var(--space-2)">
+              <h4 style="margin:0;font-size:15px">Parar de comprar</h4>
+              <span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ contagemParar }}</span>
+            </div>
+            <sc-if value="{{ temParar }}" hint-placeholder-val="{{ true }}">
+              <sc-for list="{{ listaParar }}" as="it" hint-placeholder-count="3">
+                <div style="display:flex;justify-content:space-between;gap:var(--space-2);align-items:baseline;padding:var(--space-2) 0;border-bottom:1px solid color-mix(in srgb, var(--color-text) 8%, transparent);font-size:13px">
+                  <span><strong>{{ it.nome }}</strong><br><span style="color:color-mix(in srgb, var(--color-text) 55%, transparent);font-size:11.5px">{{ it.meta }}</span></span>
+                  <span style="font-weight:700;white-space:nowrap">{{ it.qtd }}</span>
+                </div>
+              </sc-for>
+            </sc-if>
+            <sc-if value="{{ !temParar }}" hint-placeholder-val="{{ false }}">
+              <p style="padding-top:var(--space-2);font-style:italic;font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Nenhum item nesta lista.</p>
+            </sc-if>
+          </div>
+
+          <div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--color-neutral-300);padding-bottom:var(--space-2)">
+              <h4 style="margin:0;font-size:15px;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Não entrar no mix agora</h4>
+              <span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ contagemNaoEntrar }}</span>
+            </div>
+            <sc-if value="{{ temNaoEntrar }}" hint-placeholder-val="{{ true }}">
+              <sc-for list="{{ listaNaoEntrar }}" as="it" hint-placeholder-count="3">
+                <div style="display:flex;justify-content:space-between;gap:var(--space-2);align-items:baseline;padding:var(--space-2) 0;border-bottom:1px solid color-mix(in srgb, var(--color-text) 8%, transparent);font-size:13px">
+                  <span><strong>{{ it.nome }}</strong><br><span style="color:color-mix(in srgb, var(--color-text) 55%, transparent);font-size:11.5px">{{ it.meta }}</span></span>
+                  <span style="font-weight:700;white-space:nowrap;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ it.qtd }}</span>
+                </div>
+              </sc-for>
+            </sc-if>
+            <sc-if value="{{ !temNaoEntrar }}" hint-placeholder-val="{{ false }}">
+              <p style="padding-top:var(--space-2);font-style:italic;font-size:12.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Nenhum item nesta lista.</p>
+            </sc-if>
+          </div>
+        </div>
+        <p style="margin:0;font-size:12.5px;font-style:italic;color:color-mix(in srgb, var(--color-text) 60%, transparent);max-width:820px">Os pedidos respeitam o múltiplo de caixa do fornecedor e o ciclo de entrega do distribuidor (1x/semana). Estoque e parâmetros são editáveis nas abas <em>Planograma Sugerido</em> e <em>Parâmetros</em> — tudo recalcula na hora.</p>
+      </section>
+      </sc-if>
+
+      <!-- ===================== PLANOGRAMA SUGERIDO ===================== -->
+      <sc-if value="{{ tabPlanogramaActive }}" hint-placeholder-val="{{ false }}">
+      <section class="gira-tabpanel" data-screen-label="Planograma Sugerido" style="display:flex;flex-direction:column;gap:var(--space-4)">
+        <div>
+          <h2 style="font-size:28px">Planograma Sugerido</h2>
+          <p style="margin:0;max-width:680px;color:color-mix(in srgb, var(--color-text) 65%, transparent);font-size:14px">Edite o <strong>estoque atual</strong> para ver a recomendação mudar na hora. Use os filtros para focar o que importa.</p>
+        </div>
+        <div class="gira-noprint" style="display:flex;gap:var(--space-2);flex-wrap:wrap;align-items:center">
+          <select class="input" style="width:auto" value="{{ filtroClassificacaoValue }}" onChange="{{ onFiltroClassificacaoChange }}">
+            <sc-for list="{{ classificacaoOptions }}" as="opt" hint-placeholder-count="6"><option value="{{ opt.value }}">{{ opt.label }}</option></sc-for>
+          </select>
+          <select class="input" style="width:auto" value="{{ filtroClasseValue }}" onChange="{{ onFiltroClasseChange }}">
+            <sc-for list="{{ classeOptions }}" as="opt" hint-placeholder-count="4"><option value="{{ opt.value }}">{{ opt.label }}</option></sc-for>
+          </select>
+          <select class="input" style="width:auto" value="{{ filtroEstoqueValue }}" onChange="{{ onFiltroEstoqueChange }}">
+            <sc-for list="{{ estoqueOptions }}" as="opt" hint-placeholder-count="6"><option value="{{ opt.value }}">{{ opt.label }}</option></sc-for>
+          </select>
+          <select class="input" style="width:auto" value="{{ filtroMarcaValue }}" onChange="{{ onFiltroMarcaChange }}">
+            <sc-for list="{{ marcaOptions }}" as="opt" hint-placeholder-count="8"><option value="{{ opt.value }}">{{ opt.label }}</option></sc-for>
+          </select>
+          <button type="button" class="btn btn-secondary" onClick="{{ onImprimir }}">Imprimir / PDF</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="table" style="width:100%;font-size:12.5px;white-space:nowrap">
+            <thead><tr>
+              <th>Foto</th><th>SKU</th><th>Produto</th><th style="text-align:right">Demanda brick</th><th style="text-align:right">Vendas F1</th>
+              <th style="text-align:right">Estoque atual</th><th style="text-align:right">Estoque-alvo</th><th>Classificação</th><th>Classe</th>
+              <th style="text-align:right">Cob. alvo</th><th style="text-align:right">Cob. atual</th><th>Recomendação</th><th style="text-align:right">Qtd. pedido</th><th style="text-align:right">Receita-alvo</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{ planoRows }}" as="r" hint-placeholder-count="10">
+                <tr>
+                  <td><div style="width:72px;height:72px;background:var(--color-neutral-100);border-radius:var(--radius-sm);overflow:hidden">{{ r.fotoContent }}</div></td>
+                  <td>{{ r.sku }}</td>
+                  <td style="white-space:normal;min-width:180px"><strong>{{ r.produto }}</strong><br><span style="font-size:11px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ r.marcaEmbalagem }}</span></td>
+                  <td style="text-align:right">{{ r.demandaBrick }}</td>
+                  <td style="text-align:right">{{ r.vendasF1 }}</td>
+                  <td style="text-align:right"><input type="number" class="input" min="0" step="1" style="width:64px;padding:4px 8px;text-align:right;font-size:12.5px" value="{{ r.estoqueAtual }}" onChange="{{ r.onEstoqueChange }}"></td>
+                  <td style="text-align:right">{{ r.estoqueAlvo }}</td>
+                  <td><span class="{{ r.classifCls }}" style="{{ r.classifStyle }}">{{ r.classifLabel }}</span></td>
+                  <td><span class="{{ r.classeCls }}" style="{{ r.classeStyle }}">{{ r.classeLabel }}</span></td>
+                  <td style="text-align:right">{{ r.coberturaAlvo }}</td>
+                  <td style="text-align:right">{{ r.coberturaAtual }}</td>
+                  <td style="white-space:normal;min-width:220px"><span class="{{ r.recomendCls }}" style="{{ r.recomendStyle }}">{{ r.recomendLabel }}</span><div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin-top:2px">{{ r.recomendTexto }}</div></td>
+                  <td style="{{ r.qtdStyle }}">{{ r.qtdSugerida }}</td>
+                  <td style="text-align:right">{{ r.receitaAlvo }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ===================== MATCH & GAP ===================== -->
+      <sc-if value="{{ tabGapActive }}" hint-placeholder-val="{{ false }}">
+      <section class="gira-tabpanel" data-screen-label="Match e Gap" style="display:flex;flex-direction:column;gap:var(--space-4)">
+        <div>
+          <h2 style="font-size:28px">Match &amp; Gap de Mix</h2>
+          <p style="margin:0;max-width:720px;color:color-mix(in srgb, var(--color-text) 65%, transparent);font-size:14px">Demanda total do brick comparada com as vendas atuais da farmácia. O status espelha exatamente a decisão do Planograma.</p>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="table" style="width:100%;font-size:12.5px;white-space:nowrap">
+            <thead><tr>
+              <th>SKU</th><th>Produto</th><th style="text-align:right">Demanda brick</th><th style="text-align:right">Vendas F1</th><th style="text-align:right">Share F1</th>
+              <th style="text-align:right">Gap total</th><th style="text-align:right">Preço</th><th style="text-align:right">Oport. mix (R$/sem)</th><th style="text-align:right">Oport. (R$/mês)</th><th>Status no mercado</th><th>Decisão</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{ gapRows }}" as="r" hint-placeholder-count="10">
+                <tr>
+                  <td>{{ r.sku }}</td>
+                  <td style="white-space:normal;min-width:180px"><strong>{{ r.produto }}</strong> <span style="color:color-mix(in srgb, var(--color-text) 55%, transparent)">· {{ r.marca }}</span></td>
+                  <td style="text-align:right">{{ r.demandaBrick }}</td>
+                  <td style="text-align:right">{{ r.vendasF1 }}</td>
+                  <td style="text-align:right">{{ r.share }}</td>
+                  <td style="text-align:right">{{ r.gap }}</td>
+                  <td style="text-align:right">{{ r.preco }}</td>
+                  <td style="text-align:right">{{ r.oportSem }}</td>
+                  <td style="text-align:right">{{ r.oportMes }}</td>
+                  <td style="white-space:normal;min-width:200px">{{ r.status }}</td>
+                  <td><span class="{{ r.classifCls }}" style="{{ r.classifStyle }}">{{ r.classifLabel }}</span></td>
+                </tr>
+              </sc-for>
+              <tr style="font-weight:700">
+                <td>Total</td><td></td>
+                <td style="text-align:right">{{ totalDemanda }}</td>
+                <td style="text-align:right">{{ totalVendas }}</td>
+                <td style="text-align:right">{{ totalShare }}</td>
+                <td style="text-align:right">{{ totalGap }}</td>
+                <td></td>
+                <td style="text-align:right">{{ totalOportSem }}</td>
+                <td style="text-align:right">{{ totalOportMes }}</td>
+                <td></td><td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin:0;font-size:12.5px;font-style:italic;color:color-mix(in srgb, var(--color-text) 60%, transparent);max-width:820px">A <strong>oportunidade em R$</strong> soma somente SKUs que passam a existir no mix (Incluir/Monitorar), usando a projeção por fair share + rampa de entrada. O gap de SKUs que a farmácia já vende é execução/competição — não entra na receita projetada.</p>
+      </section>
+      </sc-if>
+
+      <!-- ===================== GÔNDOLA ATUAL ===================== -->
+      <sc-if value="{{ tabGondolaAtualActive }}" hint-placeholder-val="{{ false }}">
+      <section class="gira-tabpanel" data-screen-label="Gôndola atual" style="display:flex;flex-direction:column;gap:var(--space-4)">
+        <div>
+          <h2 style="font-size:28px">Gôndola atual</h2>
+          <p style="margin:0;max-width:760px;color:color-mix(in srgb, var(--color-text) 65%, transparent);font-size:14px">Produtos posicionados por <strong>giro de vendas</strong> (os que vendem mais no nível dos olhos). O selo mostra o volume em estoque.</p>
+        </div>
+        <sc-for list="{{ gondolaAtualShelves }}" as="sh" hint-placeholder-count="4">
+          <div style="margin-bottom:var(--space-6)">
+            <div style="font-size:10.5px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin-bottom:var(--space-2)">{{ sh.label }}</div>
+            <div style="overflow-x:auto;padding-top:26px">
+              <div style="display:flex;align-items:flex-end;gap:10px;min-width:max-content;border-bottom:3px solid var(--color-text);padding-bottom:0">
+                <sc-for list="{{ sh.items }}" as="it" hint-placeholder-count="4">
+                  <div style="position:relative;display:flex;flex-direction:column;align-items:center;flex:none;width:{{ it.groupWidthLg }}">
+                    <span class="{{ it.chipCls }}" style="{{ it.chipStyle }};position:absolute;top:-24px;font-size:12px;font-weight:700;padding:2px 7px;white-space:nowrap">{{ it.chipLabel }}</span>
+                    <div style="display:flex;gap:3px">
+                      <sc-for list="{{ it.facingsPhotos }}" as="ph" hint-placeholder-count="2">
+                        <div style="width:90px;height:180px;flex:none;background:var(--color-neutral-200)">{{ ph }}</div>
+                      </sc-for>
+                    </div>
+                    <div style="font-size:13px;font-weight:700;line-height:1.3;margin-top:6px;max-width:{{ it.groupWidthLg }};text-align:center">{{ it.nome }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+        <p style="margin:0;font-size:12.5px;font-style:italic;color:color-mix(in srgb, var(--color-text) 60%, transparent);max-width:820px">Ranking pelo volume de vendas atual; selo = unidades em mãos. Quando a foto real da gôndola estiver disponível, ela pode substituir esta representação.</p>
+      </section>
+      </sc-if>
+
+      <!-- ===================== GÔNDOLA SUGERIDA ===================== -->
+      <sc-if value="{{ tabGondolaSugeridaActive }}" hint-placeholder-val="{{ false }}">
+      <section class="gira-tabpanel" data-screen-label="Gôndola sugerida" style="display:flex;flex-direction:column;gap:var(--space-4)">
+        <div>
+          <h2 style="font-size:28px">Gôndola sugerida</h2>
+          <p style="margin:0;max-width:760px;color:color-mix(in srgb, var(--color-text) 65%, transparent);font-size:14px">Como a gôndola fica com o planograma do GIRA (Manter/Incluir/Monitorar), ranqueada por demanda-alvo. O selo mostra a quantidade sugerida de pedido.</p>
+        </div>
+        <sc-for list="{{ gondolaSugeridaShelves }}" as="sh" hint-placeholder-count="4">
+          <div style="margin-bottom:var(--space-6)">
+            <div style="font-size:10.5px;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;color:color-mix(in srgb, var(--color-text) 55%, transparent);margin-bottom:var(--space-2)">{{ sh.label }}</div>
+            <div style="overflow-x:auto;padding-top:26px">
+              <div style="display:flex;align-items:flex-end;gap:10px;min-width:max-content;border-bottom:3px solid var(--color-text);padding-bottom:0">
+                <sc-for list="{{ sh.items }}" as="it" hint-placeholder-count="4">
+                  <div style="position:relative;display:flex;flex-direction:column;align-items:center;flex:none;width:{{ it.groupWidthLg }}">
+                    <span class="{{ it.chipCls }}" style="{{ it.chipStyle }};position:absolute;top:-24px;font-size:12px;font-weight:700;padding:2px 7px;white-space:nowrap">{{ it.chipLabel }}</span>
+                    <div style="display:flex;gap:3px">
+                      <sc-for list="{{ it.facingsPhotos }}" as="ph" hint-placeholder-count="2">
+                        <div style="width:90px;height:180px;flex:none;background:var(--color-neutral-200)">{{ ph }}</div>
+                      </sc-for>
+                    </div>
+                    <div style="font-size:13px;font-weight:700;line-height:1.3;margin-top:6px;max-width:{{ it.groupWidthLg }};text-align:center">{{ it.nome }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+        <p style="margin:0;font-size:12.5px;font-style:italic;color:color-mix(in srgb, var(--color-text) 60%, transparent);max-width:820px">Selo = quantidade sugerida de pedido (ou OK/Novo). SKUs Remover e Não incluir saem da gôndola.</p>
+      </section>
+      </sc-if>
+
+      <!-- ===================== GÔNDOLA ATUAL E SUGERIDA ===================== -->
+      <sc-if value="{{ tabGondolaComparacaoActive }}" hint-placeholder-val="{{ false }}">
+      <section class="gira-tabpanel" data-screen-label="Gôndola atual e sugerida" style="display:flex;flex-direction:column;gap:var(--space-4)">
+        <div>
+          <h2 style="font-size:28px">Gôndola atual e sugerida</h2>
+          <p style="margin:0;max-width:760px;color:color-mix(in srgb, var(--color-text) 65%, transparent);font-size:14px">Comparação lado a lado: à esquerda o mix atual (ranking por vendas); à direita o planograma sugerido (ranking por demanda-alvo).</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-8)">
+          <div>
+            <h3 style="font-size:15px;color:var(--color-accent-700);margin-bottom:var(--space-3)">Gôndola atual</h3>
+            <sc-for list="{{ gondolaAtualShelves }}" as="sh" hint-placeholder-count="4">
+              <div>
+                <div style="font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:color-mix(in srgb, var(--color-text) 60%, transparent);border-bottom:1px solid var(--color-divider);padding-bottom:var(--space-1);margin-bottom:var(--space-2)">{{ sh.label }}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:var(--space-3);margin-bottom:var(--space-3)">
+                  <sc-for list="{{ sh.items }}" as="it" hint-placeholder-count="4">
+                    <div style="position:relative;padding-top:11px;max-width:110px">
+                      <span class="{{ it.chipCls }}" style="{{ it.chipStyle }};position:absolute;top:0;right:2px;font-size:9px;padding:1px 5px;z-index:1">{{ it.chipLabel }}</span>
+                      <div style="display:flex;gap:2px">
+                        <sc-for list="{{ it.facingsPhotos }}" as="ph" hint-placeholder-count="2">
+                          <div style="width:58px;height:116px;flex:none;background:var(--color-neutral-100)">{{ ph }}</div>
+                        </sc-for>
+                      </div>
+                      <div style="font-size:11px;font-weight:700;line-height:1.25;margin-top:5px">{{ it.nome }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div>
+            <h3 style="font-size:15px;color:var(--color-accent-700);margin-bottom:var(--space-3)">Gôndola sugerida</h3>
+            <sc-for list="{{ gondolaSugeridaShelves }}" as="sh" hint-placeholder-count="4">
+              <div>
+                <div style="font-size:10.5px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:color-mix(in srgb, var(--color-text) 60%, transparent);border-bottom:1px solid var(--color-divider);padding-bottom:var(--space-1);margin-bottom:var(--space-2)">{{ sh.label }}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:var(--space-3);margin-bottom:var(--space-3)">
+                  <sc-for list="{{ sh.items }}" as="it" hint-placeholder-count="4">
+                    <div style="position:relative;padding-top:11px;max-width:110px">
+                      <span class="{{ it.chipCls }}" style="{{ it.chipStyle }};position:absolute;top:0;right:2px;font-size:9px;padding:1px 5px;z-index:1">{{ it.chipLabel }}</span>
+                      <div style="display:flex;gap:2px">
+                        <sc-for list="{{ it.facingsPhotos }}" as="ph" hint-placeholder-count="2">
+                          <div style="width:58px;height:116px;flex:none;background:var(--color-neutral-100)">{{ ph }}</div>
+                        </sc-for>
+                      </div>
+                      <div style="font-size:11px;font-weight:700;line-height:1.25;margin-top:5px">{{ it.nome }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ===================== PLANOGRAMA VISUAL ===================== -->
+      <sc-if value="{{ tabVisualActive }}" hint-placeholder-val="{{ false }}">
+      <section class="gira-tabpanel" data-screen-label="Planograma Visual" style="display:flex;flex-direction:column;gap:var(--space-6)">
+        <div>
+          <h2 style="font-size:28px">Planograma Visual — execução em loja</h2>
+          <p style="margin:0 0 var(--space-2);max-width:680px;color:color-mix(in srgb, var(--color-text) 65%, transparent);font-size:14px">Prateleiras por forma farmacêutica. A cor indica a classe ABC; o número é a quantidade sugerida de pedido.</p>
+          <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;font-size:12.5px">
+            <sc-for list="{{ legendaAbc }}" as="lg" hint-placeholder-count="3">
+              <span class="{{ lg.cls }}" style="{{ lg.style }}">{{ lg.label }}</span>
+            </sc-for>
+          </div>
+        </div>
+        <sc-for list="{{ prateleiras }}" as="sh" hint-placeholder-count="4">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--color-divider);padding-bottom:var(--space-2);margin-bottom:var(--space-3)">
+            <h3 style="margin:0;font-size:17px">{{ sh.label }}</h3>
+            <span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ sh.count }} produtos · pedido sugerido {{ sh.totalUn }} UN</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(170px, 1fr));gap:var(--space-3)">
+            <sc-for list="{{ sh.produtos }}" as="p" hint-placeholder-count="4">
+              <div class="card elev-sm" style="padding:0;overflow:hidden">
+                <div style="{{ p.fotoBoxStyle }}">{{ p.fotoContent }}</div>
+                <div style="padding:var(--space-2) var(--space-3);display:flex;flex-direction:column;gap:4px;flex:1">
+                  <div style="font-weight:700;font-size:12px;line-height:1.25">{{ p.nome }}</div>
+                  <div style="font-size:10.5px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ p.skuEmb }}</div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:4px;font-size:11px">
+                    <span class="{{ p.classeCls }}" style="{{ p.classeStyle }}">{{ p.classeCobertura }}</span>
+                    <span style="{{ p.pedidoStyle }}">{{ p.pedidoTexto }}</span>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        </sc-for>
+        <button type="button" class="btn btn-secondary gira-noprint" style="align-self:flex-start" onClick="{{ onImprimir }}">Imprimir planograma / PDF</button>
+      </section>
+      </sc-if>
+
+      <!-- ===================== PARÂMETROS ===================== -->
+      <sc-if value="{{ tabParametrosActive }}" hint-placeholder-val="{{ false }}">
+      <section class="gira-tabpanel" data-screen-label="Parâmetros" style="display:flex;flex-direction:column;gap:var(--space-6)">
+        <div>
+          <h2 style="font-size:28px">Configuração de parâmetros do modelo</h2>
+          <p style="margin:0 0 var(--space-3);max-width:680px;color:color-mix(in srgb, var(--color-text) 65%, transparent);font-size:14px">Altere as premissas para recalcular todo o modelo na hora. O <strong>Fator de Calibração</strong> é sempre calculado.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));gap:var(--space-4)">
+            <sc-for list="{{ paramFields }}" as="f" hint-placeholder-count="17">
+              <div class="field">
+                <label>{{ f.label }}</label>
+                <input type="number" class="input" step="{{ f.step }}" value="{{ f.value }}" onChange="{{ f.onChange }}">
+                <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ f.desc }}</div>
+              </div>
+            </sc-for>
+            <div class="field">
+              <label>Fator de Calibração (calculado)</label>
+              <input type="text" class="input" readonly="readonly" value="{{ fatorCalibracao }}" title="{{ somaPesosTitle }}" style="font-weight:700;color:color-mix(in srgb, var(--color-text) 65%, transparent)">
+              <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">= (Volume nacional semanal × Participação assumida) ÷ Soma do peso-base do brick. Nunca editado à mão.</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:13px;font-family:var(--font-body);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-accent-700);margin-bottom:var(--space-2)">Referência de mercado nacional</h3>
+          <p style="margin:0 0 var(--space-3);font-size:12px;font-style:italic;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Fonte: {{ mercadoFonte }}</p>
+          <table class="table" style="width:100%;font-size:13px;max-width:520px">
+            <thead><tr><th>Indicador</th><th style="text-align:right">Valor</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ mercadoLinhas }}" as="m" hint-placeholder-count="3">
+                <tr><td>{{ m.rotulo }}</td><td style="text-align:right">{{ m.valor }}</td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <p style="margin:var(--space-4) 0 var(--space-2);font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Composição por forma farmacêutica (benchmark de contexto, não usado diretamente no cálculo do brick):</p>
+          <table class="table" style="width:100%;font-size:13px;max-width:520px">
+            <thead><tr><th>Forma</th><th style="text-align:right">Volume anual</th><th style="text-align:right">Share</th></tr></thead>
+            <tbody>
+              <sc-for list="{{ mercadoFormas }}" as="m" hint-placeholder-count="4">
+                <tr><td>{{ m.forma }}</td><td style="text-align:right">{{ m.volume }}</td><td style="text-align:right">{{ m.share }}</td></tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      </sc-if>
+
+    </main>
+
+    <footer class="gira-noprint" style="text-align:center;color:color-mix(in srgb, var(--color-text) 55%, transparent);font-size:11.5px;padding:var(--space-6);border-top:1px solid var(--color-divider)">GIRA — Especificação Funcional Fase 1 · Protótipo de referência: GIRA_Simulacao_Brick_Antiacidos.xlsx · Dados simulados (marcas fictícias, preços calibrados por PMC CMED).</footer>
+  </div>
+  </sc-if>
+
+</div>
+</sc-if>
+<sc-if value="{{ !ready }}" hint-placeholder-val="{{ true }}">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:var(--font-body);color:color-mix(in srgb, var(--color-text) 50%, transparent)">Carregando GIRA…</div>
+</sc-if>
+
 </div>
 
-<header class="topbar">
-  <div class="brand">GIRA <span>Demand Loop · Fase 1 — Controle de Estoque e Planograma</span></div>
-  <div class="brick-info">
-    <strong id="brick-nome"></strong>
-    <span id="farmacia-cliente"></span>
-  </div>
-  <button type="button" id="btn-logout" class="btn-logout" hidden>Sair</button>
-</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    ready: false, authed: false,
+    loginUser: '', loginPass: '', loginError: false,
+    tab: 'resumo',
+    params: null, estoques: null,
+    filtro: { classificacao: '', classe: '', estoque: '', marca: '' },
+  };
 
-<nav class="tabs" id="tabs">
-  <button data-tab="resumo" class="active">Resumo Executivo</button>
-  <button data-tab="acoes">O que usar / o que não usar</button>
-  <button data-tab="planograma">Planograma Sugerido</button>
-  <button data-tab="gap">Match &amp; Gap</button>
-  <button data-tab="antes">Gôndola atual</button>
-  <button data-tab="sugerida">Gôndola sugerida</button>
-  <button data-tab="atual-sugerida">Gôndola atual e sugerida</button>
-  <button data-tab="visual">Planograma Visual</button>
-  <button data-tab="parametros">Parâmetros</button>
-</nav>
+  async componentDidMount() {
+    const [data, engine] = await Promise.all([import('./gira-data.js'), import('./gira-engine.js')]);
+    this.D = data; this.E = engine;
+    let authed = false;
+    try { authed = sessionStorage.getItem('gira_auth_mock') === '1'; } catch (e) {}
+    this.setState({
+      ready: true, authed,
+      params: { ...data.DEFAULT_PARAMS },
+      estoques: Object.fromEntries(data.SKUS.map((s) => [s.sku, s.estoque])),
+    });
+  }
 
-<main>
+  onLoginUserChange = (e) => this.setState({ loginUser: e.target.value });
+  onLoginPassChange = (e) => this.setState({ loginPass: e.target.value });
+  onLoginKeyDown = (e) => { if (e.key === 'Enter') this.doLogin(); };
+  doLogin = () => {
+    const u = this.state.loginUser.trim().toLowerCase();
+    const p = this.state.loginPass;
+    if (u === 'gira@email.com' && p === 'azulpatoimpossível') {
+      try { sessionStorage.setItem('gira_auth_mock', '1'); } catch (e) {}
+      this.setState({ authed: true, loginError: false, loginPass: '' });
+    } else {
+      this.setState({ loginError: true });
+    }
+  };
+  onLogout = () => {
+    try { sessionStorage.removeItem('gira_auth_mock'); } catch (e) {}
+    this.setState({ authed: false, loginUser: '', loginPass: '', loginError: false });
+  };
 
-  <!-- ============ RESUMO EXECUTIVO ============ -->
-  <section class="tab-panel active" id="tab-resumo">
-    <div class="card">
-      <h2>Resumo Executivo</h2>
-      <p class="subtitulo">Indicadores operacionais e ponte de receita da categoria antiácidos — <strong id="resumo-farmacia"></strong></p>
-      <div class="kpis" id="kpis-operacionais"></div>
-    </div>
-    <div class="card">
-      <h3>Ponte de receita mensal (R$)</h3>
-      <div class="ponte" id="ponte-receita"></div>
-      <p class="nota" id="nota-ponte"></p>
-    </div>
-  </section>
+  setTab(tab) { this.setState({ tab }); }
+  onTabResumo = (e) => { e.preventDefault(); this.setTab('resumo'); };
+  onTabAcoes = (e) => { e.preventDefault(); this.setTab('acoes'); };
+  onTabPlanograma = (e) => { e.preventDefault(); this.setTab('planograma'); };
+  onTabGap = (e) => { e.preventDefault(); this.setTab('gap'); };
+  onTabGondolaAtual = (e) => { e.preventDefault(); this.setTab('gondolaAtual'); };
+  onTabGondolaSugerida = (e) => { e.preventDefault(); this.setTab('gondolaSugerida'); };
+  onTabGondolaComparacao = (e) => { e.preventDefault(); this.setTab('gondolaComparacao'); };
+  onTabVisual = (e) => { e.preventDefault(); this.setTab('visual'); };
+  onTabParametros = (e) => { e.preventDefault(); this.setTab('parametros'); };
+  onImprimir = () => window.print();
 
-  <!-- ============ O QUE USAR / O QUE NÃO USAR ============ -->
-  <section class="tab-panel" id="tab-acoes">
-    <div class="card">
-      <h2>O que usar e o que não usar — decisões do planograma</h2>
-      <p class="subtitulo">Listas prontas para o dia a dia: o que repor com urgência, o que pedir na semana, o que parar de comprar e o que não entra no mix.</p>
-      <div class="acoes" id="listas-acoes"></div>
-      <p class="nota">Os pedidos respeitam o múltiplo de caixa do fornecedor e o ciclo de entrega do distribuidor (1x/semana). Estoque e parâmetros são editáveis nas abas <em>Planograma Sugerido</em> e <em>Parâmetros</em> — tudo recalcula na hora.</p>
-    </div>
-  </section>
+  thumbImg(foto, alt) {
+    if (!foto) return null;
+    return React.createElement('img', {
+      src: foto, alt,
+      onError: (e) => { e.target.style.display = 'none'; },
+      style: { width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'bottom center', display: 'block' },
+    });
+  }
 
-  <!-- ============ PLANOGRAMA SUGERIDO ============ -->
-  <section class="tab-panel" id="tab-planograma">
-    <div class="card">
-      <h2>Planograma Sugerido — motor de decisão SKU a SKU</h2>
-      <p class="subtitulo">Edite o <strong>estoque atual</strong> para ver a recomendação mudar na hora. Use os filtros para focar o que importa.</p>
-      <div class="filtros">
-        <select id="filtro-classificacao"><option value="">Classificação: todas</option></select>
-        <select id="filtro-classe"><option value="">Classe ABC: todas</option></select>
-        <select id="filtro-estoque"><option value="">Status de estoque: todos</option></select>
-        <select id="filtro-marca"><option value="">Marca: todas</option></select>
-        <button class="btn btn-imprimir" id="btn-imprimir-plano">Imprimir / PDF</button>
-      </div>
-      <div class="tabela-wrap" id="tabela-planograma"></div>
-    </div>
-  </section>
+  onFiltroClassificacaoChange = (e) => this.setState((s) => ({ filtro: { ...s.filtro, classificacao: e.target.value } }));
+  onFiltroClasseChange = (e) => this.setState((s) => ({ filtro: { ...s.filtro, classe: e.target.value } }));
+  onFiltroEstoqueChange = (e) => this.setState((s) => ({ filtro: { ...s.filtro, estoque: e.target.value } }));
+  onFiltroMarcaChange = (e) => this.setState((s) => ({ filtro: { ...s.filtro, marca: e.target.value } }));
 
-  <!-- ============ MATCH & GAP ============ -->
-  <section class="tab-panel" id="tab-gap">
-    <div class="card">
-      <h2>Match &amp; Gap de Mix — Farmácia vs. mercado (brick)</h2>
-      <p class="subtitulo">Demanda total do brick comparada com as vendas atuais da farmácia. O status espelha exatamente a decisão do Planograma (mesma cor, mesmo texto).</p>
-      <div class="tabela-wrap" id="tabela-gap"></div>
-      <p class="nota">A <strong>oportunidade em R$</strong> soma somente SKUs que passam a existir no mix (Incluir/Monitorar), usando a projeção por fair share + rampa de entrada. O gap de SKUs que a farmácia já vende é execução/competição — não entra na receita projetada.</p>
-    </div>
-  </section>
+  makeEstoqueHandler(sku) {
+    return (e) => {
+      const v = Math.max(0, Math.round(Number(e.target.value) || 0));
+      this.setState((s) => ({ estoques: { ...s.estoques, [sku]: v } }));
+    };
+  }
+  makeParamHandler(chave, isPct) {
+    return (e) => {
+      const v = Number(e.target.value) || 0;
+      this.setState((s) => ({ params: { ...s.params, [chave]: isPct ? v / 100 : v } }));
+    };
+  }
 
-  <!-- ============ GÔNDOLA ATUAL ============ -->
-  <section class="tab-panel" id="tab-antes">
-    <div class="card">
-      <h2>Gôndola atual</h2>
-      <p class="subtitulo">Os produtos são posicionados por <strong>giro de vendas</strong> (os que vendem mais no nível dos olhos) e cada SKU mostra o <strong>volume em estoque</strong>: as unidades são replicadas proporcionalmente ao estoque (até 6 facings) e o <strong>número de unidades aparece no selo</strong> de cada produto.</p>
-      <div class="gondola-wrap"><div id="prateleiras-antes"></div></div>
-      <p class="nota">Ranking pelo volume de vendas atual; badge = unidades em mãos. Quando a foto real da gôndola estiver disponível, ela pode substituir esta representação.</p>
-    </div>
-  </section>
+  CAMPOS() {
+    const P = this.state.params;
+    return [
+      ['participacaoBrick', 'Participação do brick no mercado nacional (%)', P.participacaoBrick * 100, 0.1, 'Principal driver do modelo: recalcula todos os volumes, mantendo as proporções entre SKUs e farmácias.', true],
+      ['pesoF1', 'Peso de atratividade — Farmácia 1 (cliente)', P.pesoF1, 0.1, 'Fator relativo de tráfego/conversão da farmácia cliente.', false],
+      ['pesoF2', 'Peso de atratividade — Farmácia 2', P.pesoF2, 0.1, 'Concorrente com maior fluxo no brick simulado.', false],
+      ['pesoF3', 'Peso de atratividade — Farmácia 3', P.pesoF3, 0.1, 'Farmácia menor / foco em preço.', false],
+      ['rampaEntrada', 'Rampa de entrada p/ SKU novo (%)', P.rampaEntrada * 100, 1, '% do fair share capturado no 1º ciclo ao incluir um SKU novo.', true],
+      ['limAltoPotencial', 'Limite p/ "Oportunidade de alto potencial" (UN/sem)', P.limAltoPotencial, 1, 'Piso de demanda do brick acima do qual SKU ausente é prioridade de inclusão.', false],
+      ['limMonitorar', 'Limite p/ "Monitorar" (UN/sem)', P.limMonitorar, 1, 'Piso intermediário: SKU entra como piloto, sem prioridade de espaço.', false],
+      ['minProjIncluir', 'Demanda projetada mínima p/ incluir (UN/sem)', P.minProjIncluir, 1, 'Projeção mínima de venda própria para justificar inclusão.', false],
+      ['limRemover', 'Limite mínimo de giro p/ permanecer no mix (UN/sem)', P.limRemover, 1, 'Abaixo disso, SKU já vendido é sinalizado para remoção.', false],
+      ['coberturaA', 'Cobertura-alvo — Classe A (semanas)', P.coberturaA, 1, 'Maior giro exige menos semanas de estoque.', false],
+      ['coberturaB', 'Cobertura-alvo — Classe B (semanas)', P.coberturaB, 1, 'Giro intermediário.', false],
+      ['coberturaC', 'Cobertura-alvo — Classe C (semanas)', P.coberturaC, 1, 'Menor giro exige mais semanas (pedidos menos frequentes).', false],
+      ['corteA', 'Corte cumulativo da curva ABC — Classe A (%)', P.corteA * 100, 1, 'Pareto clássico (ex.: 80% da demanda acumulada).', true],
+      ['corteB', 'Corte cumulativo da curva ABC — Classe B (%)', P.corteB * 100, 1, 'Até este %: classe B; acima: classe C.', true],
+      ['margemExcesso', 'Margem de excesso (múltiplo da cobertura-alvo)', P.margemExcesso, 0.05, 'Acima deste múltiplo da cobertura da própria classe → excesso.', false],
+      ['margemRuptura', 'Margem de risco de ruptura (múltiplo da cobertura-alvo)', P.margemRuptura, 0.05, 'Abaixo deste múltiplo da cobertura da própria classe → risco de ruptura.', false],
+      ['semanasPorMes', 'Semanas por mês (fator de conversão)', P.semanasPorMes, 0.01, 'Projeta valores mensais a partir da demanda semanal.', false],
+    ];
+  }
 
-  <!-- ============ GÔNDOLA SUGERIDA ============ -->
-  <section class="tab-panel" id="tab-sugerida">
-    <div class="card">
-      <h2>Gôndola sugerida</h2>
-      <p class="subtitulo">Como a gôndola fica com o planograma do GIRA (Manter/Incluir/Monitorar): os mais vendidos no nível dos olhos (ranking por demanda-alvo), com o <strong>volume do pedido sugerido</strong> — unidades replicadas proporcionalmente (até 6 facings) e o <strong>número de unidades no selo</strong> de cada produto.</p>
-      <div class="gondola-wrap"><div id="prateleiras-sugerida"></div></div>
-      <p class="nota">Selo = quantidade sugerida de pedido; produtos com <strong>ok</strong> já têm estoque suficiente e <strong>novo</strong> é entrada inicial. SKUs <strong>Remover</strong> (Bufferex 120ml/240ml) e <strong>Não incluir</strong> (Genérico Bicarbonato de Sódio) saem da gôndola.</p>
-    </div>
-  </section>
+  badge(info) {
+    return { cls: info.tag, style: info.style || '', label: info.label };
+  }
 
-  <!-- ============ GÔNDOLA ATUAL E SUGERIDA ============ -->
-  <section class="tab-panel" id="tab-atual-sugerida">
-    <div class="card">
-      <h2>Gôndola atual e sugerida</h2>
-      <p class="subtitulo">Compare lado a lado, com as duas gôndolas no mesmo tamanho — esta página abre mais larga. Cada produto mostra o <strong>volume em unidades</strong> (estoque na atual; pedido sugerido na sugerida), replicado proporcionalmente e com o número no selo.</p>
-      <div class="comparacao">
-        <div class="lado">
-          <h3>Gôndola atual</h3>
-          <div class="gondola-wrap"><div id="prateleiras-antes-c"></div></div>
-        </div>
-        <div class="lado">
-          <h3>Gôndola sugerida</h3>
-          <div class="gondola-wrap"><div id="prateleiras-depois-c"></div></div>
-        </div>
-      </div>
-      <p class="nota">À esquerda o mix atual (ranking por vendas); à direita o planograma sugerido (ranking por demanda-alvo, facings por ABC e pedido sugerido).</p>
-    </div>
-  </section>
+  shelvesVM(shelves, chipFn) {
+    return shelves.map((sh) => ({
+      label: sh.label,
+      items: sh.items.map((it) => {
+        const c = chipFn(it.l);
+        const gw = Math.max(it.facings * 90 + (it.facings - 1) * 3, 130);
+        return {
+          sku: it.l.sk.sku, nome: it.l.sk.produto,
+          facingsPhotos: Array.from({ length: it.facings }, () => this.thumbImg(it.l.sk.foto, it.l.sk.produto)),
+          chipCls: c.cls, chipStyle: c.style, chipLabel: c.label,
+          groupWidthLg: gw + 'px',
+        };
+      }),
+    }));
+  }
 
-  <!-- ============ PLANOGRAMA VISUAL ============ -->
-  <section class="tab-panel" id="tab-visual">
-    <div class="card">
-      <h2>Planograma Visual — execução em loja</h2>
-      <p class="subtitulo">Prateleiras por forma farmacêutica. A cor de fundo indica a classe ABC (verde = A, amarelo = B, azul = C); o número é a quantidade sugerida de pedido.</p>
-      <div class="legenda" id="legenda-abc"></div>
-      <div id="prateleiras"></div>
-      <p style="margin-top:14px"><button class="btn btn-imprimir" id="btn-imprimir-visual">Imprimir planograma / PDF</button></p>
-    </div>
-  </section>
+  renderVals() {
+    if (!this.state.ready) return { ready: false };
+    const { D, E } = this;
+    const { fmtBRL, fmtNum, fmtPct } = E;
+    const authed = this.state.authed;
+    if (!authed) {
+      return {
+        ready: true, authed: false, showLogin: true,
+        loginUser: this.state.loginUser, loginPass: this.state.loginPass, loginError: this.state.loginError,
+        onLoginUserChange: this.onLoginUserChange, onLoginPassChange: this.onLoginPassChange,
+        onLoginKeyDown: this.onLoginKeyDown, doLogin: this.doLogin,
+      };
+    }
 
-  <!-- ============ PARÂMETROS ============ -->
-  <section class="tab-panel" id="tab-parametros">
-    <div class="card">
-      <h2>Configuração de parâmetros do modelo</h2>
-      <p class="subtitulo">Altere as premissas para recalcular todo o modelo na hora. O <strong>Fator de Calibração</strong> é sempre calculado.</p>
-      <div class="params-grid" id="parametros-form"></div>
-    </div>
-    <div class="card">
-      <h3>Referência de mercado nacional</h3>
-      <div id="mercado-nacional"></div>
-    </div>
-  </section>
+    const out = E.calcular(this.state.params, D.SKUS, this.state.estoques);
+    const tab = this.state.tab;
+    const cur = (name) => (tab === name ? 'page' : '');
 
-</main>
+    const classifBadge = (K) => this.badge(D.CLASSIFICACAO_INFO[K]);
+    const classeBadge = (c) => c ? this.badge(D.ABC_INFO[c]) : { cls: 'tag tag-neutral', style: '', label: '—' };
+    const estoqueBadge = (t) => this.badge(D.ESTOQUE_INFO[t]);
 
-<footer>GIRA — Especificação Funcional Fase 1 · Protótipo de referência: GIRA_Simulacao_Brick_Antiacidos.xlsx · Dados simulados (marcas fictícias, preços calibrados por PMC CMED).</footer>
+    const kpiVS = (color) => `font-family:var(--font-heading);font-weight:700;letter-spacing:-0.01em;font-size:26px;margin-top:4px;color:${color}`;
+    const kpiCards = [
+      { rotulo: 'SKUs no brick (mercado total)', valor: String(out.kpis.skusBrick), detalhe: '', valueStyle: kpiVS('var(--color-accent-700)') },
+      { rotulo: 'SKUs no mix da farmácia', valor: String(out.kpis.skusMix), detalhe: 'em estoque hoje', valueStyle: kpiVS('var(--color-text)') },
+      { rotulo: 'Sugeridos para inclusão', valor: String(out.kpis.skusIncluir + out.kpis.skusMonitorar), detalhe: `Incluir ${out.kpis.skusIncluir} · Monitorar ${out.kpis.skusMonitorar}`, valueStyle: kpiVS('var(--color-accent-700)') },
+      { rotulo: 'Recomendados para remoção', valor: String(out.kpis.skusRemover), detalhe: 'baixo giro sem demanda', valueStyle: kpiVS('var(--color-accent-2-700)') },
+      { rotulo: 'Em risco de ruptura', valor: String(out.kpis.skusRuptura), detalhe: 'repor com urgência', valueStyle: kpiVS('var(--color-accent-2-700)') },
+      { rotulo: 'Em excesso de estoque', valor: String(out.kpis.skusExcesso), detalhe: 'pausar compra', valueStyle: kpiVS('var(--color-accent-2-600)') },
+      { rotulo: 'Demanda da categoria no brick', valor: fmtNum(out.kpis.demandaBrickTotal) + ' UN/sem', detalhe: fmtNum(out.kpis.demandaBrickTotal * this.state.params.semanasPorMes) + ' UN/mês', valueStyle: kpiVS('var(--color-accent-700)') },
+      { rotulo: 'Vendas atuais da farmácia', valor: fmtNum(out.kpis.vendasF1Total) + ' UN/sem', detalhe: `share atual ${fmtPct(out.kpis.shareAtual)}`, valueStyle: kpiVS('var(--color-text)') },
+      { rotulo: 'Gap total não capturado', valor: fmtNum(out.kpis.gapTotal) + ' UN/sem', detalhe: 'inclui share perdido p/ concorrência', valueStyle: kpiVS('var(--color-accent-2-600)') },
+    ];
 
-<script src="js/data.js"></script>
-<script src="js/engine.js"></script>
-<script src="js/app.js"></script>
+    const ponteVS = (color) => `font-family:var(--font-heading);font-weight:700;letter-spacing:-0.01em;font-size:19px;margin-top:4px;color:${color}`;
+    const ponteItems = [
+      { rotulo: 'Receita atual da farmácia na categoria', valor: fmtBRL(out.ponte.receitaAtual), valueStyle: ponteVS('var(--color-text)'), boxStyle: 'border-top:1px solid var(--color-divider);padding-top:var(--space-2)' },
+      { rotulo: '(+) Ganho com inclusão de SKUs novos', valor: fmtBRL(out.ponte.ganhoInclusao), valueStyle: ponteVS('var(--color-accent-700)'), boxStyle: 'border-top:1px solid var(--color-divider);padding-top:var(--space-2)' },
+      { rotulo: '(−) Perda com remoção de SKUs de baixo giro', valor: fmtBRL(out.ponte.perdaRemocao), valueStyle: ponteVS('var(--color-accent-2-700)'), boxStyle: 'border-top:1px solid var(--color-divider);padding-top:var(--space-2)' },
+      { rotulo: '(=) Receita potencial com planograma otimizado', valor: fmtBRL(out.ponte.receitaPotencial), valueStyle: ponteVS('var(--color-accent-700)'), boxStyle: 'border-top:3px solid var(--color-accent);padding-top:var(--space-2)' },
+    ];
+    const notaPonte = `Uplift de receita mensal projetado: ${fmtPct(out.ponte.uplift)}. O ganho soma apenas SKUs que passam a existir no mix (Incluir/Monitorar), com projeção por fair share + rampa de entrada — o share perdido em SKUs já vendidos é execução/competição e não entra nesta conta.`;
+
+    const nomeMeta = (l) => ({ nome: l.sk.produto, meta: `${l.sk.sku} · ${l.sk.marca}` });
+    const urgente = out.linhas.filter((l) => l.T.tipo === 'ruptura').map((l) => ({ ...nomeMeta(l), qtd: l.U > 0 ? `pedir ${l.U} UN` : `estoque ${l.estoque} UN` }));
+    const comprar = out.linhas.filter((l) => l.U > 0).map((l) => ({ ...nomeMeta(l), qtd: `${l.U} UN (${l.sk.multiplo}/cx)` }));
+    const parar = out.linhas.filter((l) => l.K === 'Remover' || l.T.tipo === 'excesso').map((l) => ({ ...nomeMeta(l), qtd: l.K === 'Remover' ? 'remover do mix' : 'pausar compra' }));
+    const naoEntrar = out.linhas.filter((l) => l.K === 'Não incluir').map((l) => ({ ...nomeMeta(l), qtd: 'sem espaço de gôndola' }));
+
+    const planoAll = out.linhas.map((l) => {
+      const cb = classifBadge(l.K), ab = classeBadge(l.classe), eb = estoqueBadge(l.T.tipo);
+      return {
+        sku: l.sk.sku, produto: l.sk.produto, marcaEmbalagem: `${l.sk.marca} · ${l.sk.embalagem}`,
+        fotoContent: this.thumbImg(l.sk.foto, l.sk.produto) || l.sk.sku,
+        demandaBrick: fmtNum(l.C, 1), vendasF1: fmtNum(l.D, 1),
+        estoqueAtual: l.estoque, estoqueAlvo: fmtNum(l.R, 1),
+        classifCls: cb.cls, classifStyle: cb.style, classifLabel: cb.label,
+        classeCls: ab.cls, classeStyle: ab.style, classeLabel: ab.label,
+        coberturaAlvo: l.Q || '—', coberturaAtual: l.S === null ? '—' : fmtNum(l.S, 1) + ' sem',
+        recomendCls: eb.cls, recomendStyle: eb.style, recomendLabel: eb.label, recomendTexto: l.T.texto,
+        qtdSugerida: l.U > 0 ? l.U : (l.K === 'Remover' || l.K === 'Não incluir' ? '—' : '0'),
+        qtdStyle: `text-align:right;font-weight:700;color:${l.U > 0 ? 'var(--color-accent-700)' : 'var(--color-text)'}`,
+        receitaAlvo: fmtBRL(l.W),
+        _K: l.K, _classe: l.classe, _tipo: l.T.tipo, _marca: l.sk.marca,
+        onEstoqueChange: this.makeEstoqueHandler(l.sk.sku),
+      };
+    });
+    const f = this.state.filtro;
+    const planoRows = planoAll.filter((r) => (!f.classificacao || r._K === f.classificacao) && (!f.classe || r._classe === f.classe) && (!f.estoque || r._tipo === f.estoque) && (!f.marca || r._marca === f.marca));
+
+    const gapRows = out.matchGap.map((l) => {
+      const cb = classifBadge(l.K);
+      return {
+        sku: l.sk.sku, produto: l.sk.produto, marca: l.sk.marca,
+        demandaBrick: fmtNum(l.C, 1), vendasF1: fmtNum(l.D, 1), share: fmtPct(l.share), gap: fmtNum(l.gap, 1),
+        preco: fmtBRL(l.preco), oportSem: l.D > 0 ? '—' : fmtBRL(l.oportunidadeSem), oportMes: l.D > 0 ? '—' : fmtBRL(l.oportunidadeMes),
+        status: l.status, classifCls: cb.cls, classifStyle: cb.style, classifLabel: cb.label,
+      };
+    });
+    const soma = (arr, fn) => arr.reduce((a, l) => a + fn(l), 0);
+    const totalDemanda = fmtNum(soma(out.matchGap, (l) => l.C), 1);
+    const totalVendas = fmtNum(soma(out.matchGap, (l) => l.D), 1);
+    const totalShare = fmtPct(out.kpis.shareAtual);
+    const totalGap = fmtNum(soma(out.matchGap, (l) => l.gap), 1);
+    const totalOportSem = fmtBRL(soma(out.matchGap, (l) => l.oportunidadeSem));
+    const totalOportMes = fmtBRL(soma(out.matchGap, (l) => l.oportunidadeMes));
+
+    const legendaAbc = Object.entries(D.ABC_INFO).map(([k, v]) => this.badge(v));
+
+    const prateleiras = out.ordemFormas.filter((forma) => out.prateleiras[forma] && out.prateleiras[forma].length).map((forma) => {
+      const linhas = out.prateleiras[forma];
+      const totalUn = linhas.reduce((a, l) => a + l.U, 0);
+      return {
+        label: D.FORMA_LABEL[forma] || forma, count: linhas.length, totalUn,
+        produtos: linhas.map((l) => {
+          const ab = D.ABC_INFO[l.classe];
+          const borderColor = l.classe === 'A' ? 'var(--color-accent)' : l.classe === 'B' ? 'var(--color-accent-300)' : 'var(--color-neutral-300)';
+          return {
+            fotoContent: this.thumbImg(l.sk.foto, l.sk.produto) || React.createElement('span', { style: { fontSize: 11, fontWeight: 700, color: 'color-mix(in srgb, var(--color-text) 55%, transparent)', textAlign: 'center', padding: 4 } }, l.sk.marca.toUpperCase()),
+            marca: l.sk.marca.toUpperCase(), nome: l.sk.produto, skuEmb: `${l.sk.sku} · ${l.sk.embalagem}`,
+            classeCls: ab.tag, classeStyle: ab.style, classeCobertura: `${l.classe} · cob. ${l.Q} sem`,
+            pedidoTexto: l.U > 0 ? `Pedir ${l.U} UN` : (l.K === 'Remover' ? 'Remover' : 'OK'),
+            pedidoStyle: `font-weight:700;color:${l.U > 0 ? 'var(--color-accent-700)' : (l.K === 'Remover' ? 'var(--color-accent-2-700)' : 'color-mix(in srgb, var(--color-text) 55%, transparent)')}`,
+            fotoBoxStyle: `height:190px;background:var(--color-neutral-100);display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:4px solid ${borderColor}`,
+          };
+        }),
+      };
+    });
+
+    const gondolaAtualRaw = E.montarGondola(out.linhas, { sortKey: (l) => l.D, facing: (l) => E.faceEstoque(l.estoque) });
+    const gondolaAtualShelves = this.shelvesVM(gondolaAtualRaw, (l) => {
+      const b = estoqueBadge(l.T.tipo);
+      return { cls: b.cls, style: b.style, label: `${l.estoque} UN` };
+    });
+    const gondolaSugeridaLinhas = out.linhas.filter((l) => l.K === 'Manter' || l.K === 'Incluir' || l.K === 'Monitorar');
+    const gondolaSugeridaRaw = E.montarGondola(gondolaSugeridaLinhas, { sortKey: (l) => l.J, facing: (l) => E.facePedido(l.U) });
+    const gondolaSugeridaShelves = this.shelvesVM(gondolaSugeridaRaw, (l) => {
+      const b = classifBadge(l.K);
+      return { cls: b.cls, style: b.style, label: l.U > 0 ? `${l.U} UN` : (l.K === 'Manter' ? 'OK' : 'Novo') };
+    });
+
+    const CAMPOS = this.CAMPOS();
+    const paramFields = CAMPOS.map(([chave, label, value, step, desc, isPct]) => ({
+      chave, label, desc, step, value: Math.round(value * 10000) / 10000,
+      onChange: this.makeParamHandler(chave, isPct),
+    }));
+
+    const classificacaoOptions = [{ value: '', label: 'Classificação: todas' }, ...Object.entries(D.CLASSIFICACAO_INFO).map(([k, v]) => ({ value: k, label: v.label }))];
+    const classeOptions = [{ value: '', label: 'Classe ABC: todas' }, { value: 'A', label: 'Classe A' }, { value: 'B', label: 'Classe B' }, { value: 'C', label: 'Classe C' }];
+    const estoqueOptions = [{ value: '', label: 'Status de estoque: todos' }, ...Object.entries(D.ESTOQUE_INFO).map(([k, v]) => ({ value: k, label: v.label }))];
+    const marcaOptions = [{ value: '', label: 'Marca: todas' }, ...[...new Set(D.SKUS.map((s) => s.marca))].map((m) => ({ value: m, label: m }))];
+
+    return {
+      ready: true, authed: true, showLogin: false,
+      brickNome: D.BRICK.nome,
+      brickFarmaciasStr: D.BRICK.farmacias.map((f2) => (f2.cliente ? f2.nome + ' (cliente)' : f2.nome)).join(' · '),
+      resumoFarmacia: D.BRICK.farmaciaCliente,
+      onLogout: this.onLogout,
+      tab,
+      tabResumoActive: tab === 'resumo', tabAcoesActive: tab === 'acoes', tabPlanogramaActive: tab === 'planograma', tabGapActive: tab === 'gap',
+      tabGondolaAtualActive: tab === 'gondolaAtual', tabGondolaSugeridaActive: tab === 'gondolaSugerida', tabGondolaComparacaoActive: tab === 'gondolaComparacao',
+      tabVisualActive: tab === 'visual', tabParametrosActive: tab === 'parametros',
+      tabResumoCurrent: cur('resumo'), tabAcoesCurrent: cur('acoes'), tabPlanogramaCurrent: cur('planograma'), tabGapCurrent: cur('gap'),
+      tabGondolaAtualCurrent: cur('gondolaAtual'), tabGondolaSugeridaCurrent: cur('gondolaSugerida'), tabGondolaComparacaoCurrent: cur('gondolaComparacao'),
+      tabVisualCurrent: cur('visual'), tabParametrosCurrent: cur('parametros'),
+      onTabResumo: this.onTabResumo, onTabAcoes: this.onTabAcoes, onTabPlanograma: this.onTabPlanograma, onTabGap: this.onTabGap,
+      onTabGondolaAtual: this.onTabGondolaAtual, onTabGondolaSugerida: this.onTabGondolaSugerida, onTabGondolaComparacao: this.onTabGondolaComparacao,
+      onTabVisual: this.onTabVisual, onTabParametros: this.onTabParametros,
+      onImprimir: this.onImprimir,
+
+      kpiCards, ponteItems, notaPonte,
+
+      contagemUrgente: urgente.length, contagemComprar: comprar.length, contagemParar: parar.length, contagemNaoEntrar: naoEntrar.length,
+      temUrgente: urgente.length > 0, temComprar: comprar.length > 0, temParar: parar.length > 0, temNaoEntrar: naoEntrar.length > 0,
+      listaUrgente: urgente, listaComprar: comprar, listaParar: parar, listaNaoEntrar: naoEntrar,
+
+      classificacaoOptions, classeOptions, estoqueOptions, marcaOptions,
+      filtroClassificacaoValue: f.classificacao, filtroClasseValue: f.classe, filtroEstoqueValue: f.estoque, filtroMarcaValue: f.marca,
+      onFiltroClassificacaoChange: this.onFiltroClassificacaoChange, onFiltroClasseChange: this.onFiltroClasseChange, onFiltroEstoqueChange: this.onFiltroEstoqueChange, onFiltroMarcaChange: this.onFiltroMarcaChange,
+      planoRows,
+
+      gapRows, totalDemanda, totalVendas, totalShare, totalGap, totalOportSem, totalOportMes,
+
+      gondolaAtualShelves, gondolaSugeridaShelves,
+
+      legendaAbc, prateleiras,
+
+      paramFields, fatorCalibracao: out.fatorCalibracao.toFixed(6), somaPesosTitle: `Soma dos pesos-base do brick: ${out.somaPesos} UN`,
+      mercadoFonte: D.MERCADO_NACIONAL.fonte,
+      mercadoLinhas: [
+        { rotulo: 'Volume nacional anual (UN)', valor: fmtNum(D.MERCADO_NACIONAL.volumeAnual, 0) },
+        { rotulo: 'Faturamento nacional anual (R$)', valor: fmtBRL(D.MERCADO_NACIONAL.faturamentoAnual) },
+        { rotulo: 'Volume nacional semanal equivalente (UN)', valor: fmtNum(D.MERCADO_NACIONAL.volumeSemanalEquivalente, 1) },
+      ],
+      mercadoFormas: D.MERCADO_NACIONAL.formas.map((fo) => ({ forma: fo.forma, volume: fmtNum(fo.volumeAnual, 0), share: fmtPct(fo.share) })),
+    };
+  }
+}
+
+</script>
 </body>
 </html>

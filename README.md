@@ -30,10 +30,10 @@ Qualquer outra combinação é recusada. A sessão fica ativa na aba (sessionSto
 
 ```
 index.html        interface
-css/style.css     estilos (com regras de impressão)
-js/data.js        dados de demonstração: catálogo de SKUs, pesos por farmácia, referência de mercado
-js/engine.js      motor de cálculo (Demanda do Brick, Match & Gap, Planograma Sugerido, Resumo Executivo)
-js/app.js         estado, renderização, eventos e login mock
+_ds/broadsheet-…  design system (tokens + React 18)
+gira-data.js      dados de demonstração: catálogo de SKUs, pesos por farmácia, referência de mercado
+gira-engine.js    motor de cálculo (Demanda do Brick, Match & Gap, Planograma Sugerido, Gôndolas, Resumo Executivo)
+support.js        runtime do framework Dc + login mock
 img/              fotos dos produtos (512×512)
 ```
 
