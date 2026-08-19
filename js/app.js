@@ -359,6 +359,10 @@
   const trunc = (s, n) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
   let gondolaSeq = 0; // ids únicos por gôndola (evita colisão entre os SVGs da página)
 
+  // facings proporcionais ao volume (estoque / pedido sugerido), limitados a 6
+  const faceEstoque = (e) => (e <= 0 ? 1 : e <= 9 ? 1 : e <= 19 ? 2 : e <= 29 ? 3 : e <= 44 ? 4 : e <= 59 ? 5 : 6);
+  const facePedido = (u) => (u <= 0 ? 1 : u <= 9 ? 2 : u <= 17 ? 3 : u <= 25 ? 4 : u <= 33 ? 5 : 6);
+
   function gondolaSVG(linhas, opts) {
     const uid = 'g' + (++gondolaSeq) + '-';
     const W = 1120, SIDE = 26, TOP = 46, BASE = 34;
@@ -459,6 +463,13 @@
           svg += `</g>`;
           x += it.w + 2;
         }
+        // chip de volume no grupo (canto superior direito da 1ª facing)
+        const chipTxt = opts.chip ? opts.chip(it.l) : '';
+        if (chipTxt) {
+          const cw = Math.min(chipTxt.length * 5.4 + 10, it.w - 2);
+          svg += `<rect x="${it.x + it.w - cw - 1}" y="${s.y0 + 1}" width="${cw}" height="15" rx="4" fill="#22303c" fill-opacity="0.9"/>`;
+          svg += `<text x="${it.x + it.w - cw / 2 - 1}" y="${s.y0 + 12}" font-size="8" font-weight="800" fill="#ffffff" text-anchor="middle">${escXml(chipTxt)}</text>`;
+        }
       }
       // prateleira (face superior + frente metálica)
       svg += `<g filter="url(#${uid}shelfShadow)">`;
@@ -498,7 +509,8 @@
     const { linhas } = state.out;
     const atuais = [...linhas];
     const opts = {
-      facing: () => 2,
+      facing: (l) => faceEstoque(l.estoque),
+      chip: (l) => `${l.estoque} UN`,
       meta: (l) => `estoque ${l.estoque} UN`,
       rail: (l) => `estoque ${l.estoque} UN`,
       titulo: 'GÔNDOLA ATUAL',
@@ -512,7 +524,8 @@
     const { linhas } = state.out;
     const sugerido = linhas.filter((l) => l.K === 'Manter' || l.K === 'Incluir' || l.K === 'Monitorar');
     const opts = {
-      facing: (l) => FACINGS_ABC[l.classe] || 2,
+      facing: (l) => facePedido(l.U),
+      chip: (l) => (l.U > 0 ? `${l.U} UN` : (l.K === 'Manter' ? 'ok' : 'novo')),
       meta: (l) => `${l.K} · classe ${l.classe || '-'} · ${l.U > 0 ? 'pedir ' + l.U + ' UN' : (l.K === 'Manter' ? 'estoque ok' : 'entrada')}`,
       rail: (l) => (l.U > 0 ? `pedir ${l.U} UN` : (l.K === 'Manter' ? 'ok' : 'entrada')) + ` · ${l.classe || '-'}`,
       titulo: 'GÔNDOLA SUGERIDA',
