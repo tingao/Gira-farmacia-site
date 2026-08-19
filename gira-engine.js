@@ -149,7 +149,7 @@ export function montarGondola(linhas, opts) {
   const eye = ordenadas.slice(0, eyeCount);
   const topo = ordenadas.slice(eyeCount, eyeCount + topCount);
   const base = ordenadas.slice(eyeCount + topCount);
-  return [
+  const prateleiras = [
     { label: 'Prateleira 1 · Topo', items: topo },
     { label: 'Prateleira 2 · Nível dos olhos', items: eye.filter((_, i) => i % 2 === 0) },
     { label: 'Prateleira 3 · Nível dos olhos', items: eye.filter((_, i) => i % 2 === 1) },
@@ -158,6 +158,23 @@ export function montarGondola(linhas, opts) {
     label: p.label,
     items: p.items.map((l) => ({ l, facings: opts.facing(l) })),
   }));
+
+  /* Padroniza o total de colunas: todas as prateleiras ficam com o mesmo número
+   * total de facings. Prateleiras com menos colunas recebem facings extras
+   * (repetindo o mesmo produto), distribuídas ciclicamente entre os produtos. */
+  const totalDe = (p) => p.items.reduce((a, it) => a + it.facings, 0);
+  const alvo = Math.max(...prateleiras.map(totalDe));
+  for (const p of prateleiras) {
+    let falta = alvo - totalDe(p);
+    let i = 0;
+    while (falta > 0) {
+      p.items[i % p.items.length].facings += 1;
+      i += 1;
+      falta -= 1;
+    }
+  }
+
+  return prateleiras;
 }
 /* Facings uniformes por produto: todas as prateleiras exibem o mesmo número de
  * "rows" (imagens) por SKU — o volume de cada um continua visível no selo/badge. */
