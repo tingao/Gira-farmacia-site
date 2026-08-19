@@ -305,7 +305,7 @@
       <section class="gira-tabpanel" data-screen-label="Gôndola atual" style="display:flex;flex-direction:column;gap:var(--space-4)">
         <div>
           <h2 style="font-size:28px">Gôndola atual</h2>
-          <p style="margin:0;max-width:760px;color:color-mix(in srgb, var(--color-text) 65%, transparent);font-size:14px">Produtos posicionados por <strong>giro de vendas</strong> (os que vendem mais no nível dos olhos). O selo mostra o volume em estoque.</p>
+          <p style="margin:0;max-width:760px;color:color-mix(in srgb, var(--color-text) 65%, transparent);font-size:14px">Os <strong>{{ contagemMixAtual }}</strong> SKUs com unidades em estoque (mix atual no Excel), posicionados por <strong>giro de vendas</strong> — os que vendem mais no nível dos olhos. O selo mostra o volume em estoque. <strong>SKUs com 0 unidades não aparecem na gôndola.</strong></p>
         </div>
         <sc-for list="{{ gondolaAtualShelves }}" as="sh" hint-placeholder-count="4">
           <div style="margin-bottom:var(--space-6)">
@@ -747,15 +747,16 @@ class Component extends DCLogic {
       };
     });
 
-    const gondolaAtualRaw = E.montarGondola(out.linhas, { sortKey: (l) => l.D, facing: (l) => E.faceEstoque(l.estoque) });
-    const gondolaAtualShelves = this.shelvesVM(gondolaAtualRaw, (l) => {
-      const b = estoqueBadge(l.T.tipo);
-      return { cls: b.cls, style: b.style, label: `${l.estoque} UN` };
-    });
+    const gondolaAtualLinhas = out.linhas.filter((l) => l.estoque > 0); // SKUs com 0 unidades não entram na prateleira
+    const gondolaAtualRaw = E.montarGondola(gondolaAtualLinhas, { sortKey: (l) => l.D, facing: (l) => E.faceEstoque(l.estoque) });
     const gondolaSugeridaLinhas = out.linhas.filter((l) => l.K === 'Manter' || l.K === 'Incluir' || l.K === 'Monitorar');
     const gondolaSugeridaRaw = E.montarGondola(gondolaSugeridaLinhas, { sortKey: (l) => l.J, facing: (l) => E.facePedido(l.U) });
     // mesma quantidade de colunas na gôndola atual e na sugerida (comparação alinhada)
     E.padronizarColunas([gondolaAtualRaw, gondolaSugeridaRaw]);
+    const gondolaAtualShelves = this.shelvesVM(gondolaAtualRaw, (l) => {
+      const b = estoqueBadge(l.T.tipo);
+      return { cls: b.cls, style: b.style, label: `${l.estoque} UN` };
+    });
     const gondolaSugeridaShelves = this.shelvesVM(gondolaSugeridaRaw, (l) => {
       const b = classifBadge(l.K);
       return { cls: b.cls, style: b.style, label: l.U > 0 ? `${l.U} UN` : (l.K === 'Manter' ? 'OK' : 'Novo') };
@@ -775,6 +776,7 @@ class Component extends DCLogic {
     return {
       ready: true, authed: true, showLogin: false,
       brickNome: D.BRICK.nome,
+      contagemMixAtual: out.kpis.skusMix,
       brickFarmaciasStr: D.BRICK.farmacias.map((f2) => (f2.cliente ? f2.nome + ' (cliente)' : f2.nome)).join(' · '),
       resumoFarmacia: D.BRICK.farmaciaCliente,
       onLogout: this.onLogout,
