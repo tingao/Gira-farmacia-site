@@ -543,7 +543,7 @@ class Component extends DCLogic {
   doLogin = () => {
     const u = this.state.loginUser.trim().toLowerCase();
     const p = this.state.loginPass;
-    if (u === 'gira@email.com' && p === 'azulpatoimpossível') {
+    if (u === 'gira@email.com' && p === 'teste') {
       try { sessionStorage.setItem('gira_auth_mock', '1'); } catch (e) {}
       this.setState({ authed: true, loginError: false, loginPass: '' });
     } else {

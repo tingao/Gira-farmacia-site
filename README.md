@@ -10,7 +10,7 @@ O site abre com uma tela de login **mock** (client-side, apenas demonstração �
 
 ```
 Usuário: gira@email.com
-Senha:   1234
+Senha:   teste
 ```
 
 Qualquer outra combinação é recusada. A sessão fica ativa na aba (sessionStorage) enquanto o navegador estiver aberto; o botão **Sair** no topo encerra e volta ao login.
