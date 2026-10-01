@@ -3,7 +3,7 @@
  * Nomes de marca e produto são fictícios; preços calibrados por PMC CMED. */
 
 export const BRICK = {
-  nome: '0881020 - MACEIO/AL - SIQUEIRA CAMPOS-560',
+  nome: '0347915 - CURITIBA/PR - BARAO DO RIO BRANCO-218',
   farmaciaCliente: 'Farmácia 1',
   farmacias: [
     { id: 'F1', nome: 'Farmácia 1', cliente: true },
