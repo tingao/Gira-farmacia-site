@@ -71,7 +71,7 @@
           <div style="display:flex;align-items:center;gap:8px;color:var(--color-accent-2-300);font-size:13.5px"><i class="ph ph-warning-circle" style="font-size:17px"></i>Usuário ou senha incorretos.</div>
         </sc-if>
         <button type="button" class="btn btn-primary" style="min-height:46px;font-size:15px;margin-top:4px" onClick="{{ doLogin }}">Entrar<i class="ph ph-arrow-right"></i></button>
-        <p style="margin:0;font-size:12.5px;color:color-mix(in srgb, var(--color-text) 58%, transparent)">Acesso de demonstração (mock) — apenas credenciais fornecidas pela equipe.</p>
+        <p style="margin:0;font-size:12.5px;color:color-mix(in srgb, var(--color-text) 58%, transparent)">Acesso de demonstração (mock): só entram as credenciais fornecidas pela equipe.</p>
       </div>
       <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 50%, transparent)">Dados simulados · marcas fictícias</div>
     </div>
@@ -79,7 +79,7 @@
       <div style="max-width:520px">
         <div style="font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gira-hero-pos);margin-bottom:18px">Demand Loop · Fase 1</div>
         <div style="font-size:44px;line-height:1.08;letter-spacing:-0.03em;font-weight:500;text-wrap:balance">Da demanda do brick à gôndola certa.</div>
-        <p style="margin:20px 0 0;font-size:16px;line-height:1.6;color:color-mix(in srgb, var(--gira-on-section) 78%, transparent);max-width:440px">Mix, estoque e planograma recalculados a partir da demanda real do mercado — SKU a SKU.</p>
+        <p style="margin:20px 0 0;font-size:16px;line-height:1.6;color:color-mix(in srgb, var(--gira-on-section) 78%, transparent);max-width:440px">Mix, estoque e planograma recalculados a partir da demanda real do mercado, SKU a SKU.</p>
       </div>
       <div style="display:flex;gap:14px;align-items:flex-end">
         <sc-for list="{{ loginFotos }}" as="f" hint-placeholder-count="5">
@@ -180,7 +180,7 @@
         <div>
           <div style="font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-300)">Visão geral</div>
           <h1 style="margin:8px 0 10px;font-size:36px;letter-spacing:-0.025em">Resumo Executivo</h1>
-          <p style="margin:0;max-width:640px;font-size:16px;color:color-mix(in srgb, var(--color-text) 64%, transparent)">Indicadores operacionais e ponte de receita da categoria antiácidos — <strong style="font-weight:500;color:var(--color-text)">{{ resumoFarmacia }}</strong></p>
+          <p style="margin:0;max-width:640px;font-size:16px;color:color-mix(in srgb, var(--color-text) 64%, transparent)">Indicadores operacionais e ponte de receita da categoria antiácidos na <strong style="font-weight:500;color:var(--color-text)">{{ resumoFarmacia }}</strong></p>
         </div>
 
         <div style="border-radius:18px;overflow:hidden;background:radial-gradient(110% 130% at 0% 0%, var(--color-section-glow), var(--color-section) 62%);color:var(--gira-on-section);padding:40px 44px;display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:40px 56px;align-items:center">
@@ -275,7 +275,7 @@
             </div>
           </sc-for>
         </div>
-        <p style="margin:0;font-size:13px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 60%, transparent);max-width:820px">Os pedidos respeitam o múltiplo de caixa do fornecedor e o ciclo de entrega do distribuidor (1x/semana). Estoque e parâmetros são editáveis nas abas <em>Planograma Sugerido</em> e <em>Parâmetros</em> — tudo recalcula na hora.</p>
+        <p style="margin:0;font-size:13px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 60%, transparent);max-width:820px">Os pedidos respeitam o múltiplo de caixa do fornecedor e o ciclo de entrega do distribuidor (1x/semana). Estoque e parâmetros são editáveis nas abas <em>Planograma Sugerido</em> e <em>Parâmetros</em>; tudo recalcula na hora.</p>
       </section>
       </sc-if>
 
@@ -391,7 +391,7 @@
             </tbody>
           </table>
         </div>
-        <p style="margin:0;font-size:13px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 60%, transparent);max-width:820px">A <strong style="font-weight:500">oportunidade em R$</strong> soma somente SKUs que passam a existir no mix (Incluir/Monitorar), usando a projeção por fair share + rampa de entrada. O gap de SKUs que a farmácia já vende é execução/competição — não entra na receita projetada.</p>
+        <p style="margin:0;font-size:13px;line-height:1.6;color:color-mix(in srgb, var(--color-text) 60%, transparent);max-width:820px">A <strong style="font-weight:500">oportunidade em R$</strong> soma somente SKUs que passam a existir no mix (Incluir/Monitorar), usando a projeção por fair share + rampa de entrada. O gap de SKUs que a farmácia já vende é execução/competição e fica fora da receita projetada.</p>
       </section>
       </sc-if>
 
@@ -401,7 +401,7 @@
         <div>
           <div style="font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-300)">Gôndola</div>
           <h1 style="margin:8px 0 10px;font-size:36px;letter-spacing:-0.025em">Gôndola atual</h1>
-          <p style="margin:0;max-width:720px;font-size:16px;color:color-mix(in srgb, var(--color-text) 64%, transparent)">Os <strong style="font-weight:500;color:var(--color-text)">{{ contagemMixAtual }}</strong> SKUs com unidades em estoque, posicionados por giro de vendas — os que vendem mais no nível dos olhos. O selo mostra o volume em estoque. SKUs com 0 unidades não aparecem na gôndola.</p>
+          <p style="margin:0;max-width:720px;font-size:16px;color:color-mix(in srgb, var(--color-text) 64%, transparent)">Os <strong style="font-weight:500;color:var(--color-text)">{{ contagemMixAtual }}</strong> SKUs com unidades em estoque, posicionados por giro de vendas: os que mais vendem ficam no nível dos olhos. SKUs com 0 unidades não aparecem na gôndola.</p>
         </div>
         <div style="background:var(--color-surface);border-radius:14px;box-shadow:var(--shadow-sm);padding:28px 32px 32px;display:flex;flex-direction:column;gap:30px">
           <sc-for list="{{ gondolaAtualShelves }}" as="sh" hint-placeholder-count="4">
@@ -436,7 +436,7 @@
         <div>
           <div style="font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-300)">Gôndola</div>
           <h1 style="margin:8px 0 10px;font-size:36px;letter-spacing:-0.025em">Gôndola sugerida</h1>
-          <p style="margin:0;max-width:720px;font-size:16px;color:color-mix(in srgb, var(--color-text) 64%, transparent)">Como a gôndola fica com o planograma do GIRA (Manter/Incluir/Monitorar), ranqueada por demanda-alvo. O selo mostra a quantidade sugerida de pedido.</p>
+          <p style="margin:0;max-width:720px;font-size:16px;color:color-mix(in srgb, var(--color-text) 64%, transparent)">Como a gôndola fica com o planograma do GIRA (Manter/Incluir/Monitorar), ranqueada por demanda-alvo.</p>
         </div>
         <div style="background:var(--color-surface);border-radius:14px;box-shadow:var(--shadow-sm);padding:28px 32px 32px;display:flex;flex-direction:column;gap:30px">
           <sc-for list="{{ gondolaSugeridaShelves }}" as="sh" hint-placeholder-count="4">
@@ -526,7 +526,7 @@
         <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
           <div>
             <div style="font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-300)">Execução</div>
-            <h1 style="margin:8px 0 10px;font-size:36px;letter-spacing:-0.025em">Planograma Visual — execução em loja</h1>
+            <h1 style="margin:8px 0 10px;font-size:36px;letter-spacing:-0.025em">Planograma Visual: execução em loja</h1>
             <p style="margin:0 0 14px;max-width:640px;font-size:16px;color:color-mix(in srgb, var(--color-text) 64%, transparent)">Prateleiras por forma farmacêutica. A etiqueta indica a classe ABC; o número é a quantidade sugerida de pedido.</p>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
               <sc-for list="{{ legendaAbc }}" as="lg" hint-placeholder-count="3"><span class="{{ lg.cls }}">{{ lg.label }}</span></sc-for>
@@ -569,7 +569,7 @@
         <div>
           <div style="font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-300)">Configuração</div>
           <h1 style="margin:8px 0 10px;font-size:36px;letter-spacing:-0.025em">Parâmetros do modelo</h1>
-          <p style="margin:0;max-width:640px;font-size:16px;color:color-mix(in srgb, var(--color-text) 64%, transparent)">Altere as premissas para recalcular todo o modelo na hora. O <strong style="font-weight:500;color:var(--color-text)">Fator de Calibração</strong> é sempre calculado.</p>
+          <p style="margin:0;max-width:640px;font-size:16px;color:color-mix(in srgb, var(--color-text) 64%, transparent)">Altere uma premissa e o modelo inteiro se recalcula. O <strong style="font-weight:500;color:var(--color-text)">Fator de Calibração</strong> é sempre calculado.</p>
         </div>
         <div style="border-radius:14px;padding:22px 26px;background:var(--color-accent-900);box-shadow:0 0 0 1px color-mix(in srgb, var(--color-accent) 35%, transparent);display:flex;align-items:center;gap:24px;flex-wrap:wrap">
           <i class="ph ph-function" style="font-size:26px;color:var(--color-accent)"></i>
@@ -631,7 +631,7 @@
         <div>
           <div style="font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-300)">Configuração</div>
           <h1 style="margin:8px 0 10px;font-size:36px;letter-spacing:-0.025em">Importar produtos e dados (XLSX)</h1>
-          <p style="margin:0;max-width:720px;font-size:16px;color:color-mix(in srgb, var(--color-text) 64%, transparent)">Envie uma planilha .xlsx com o catálogo de SKUs. A leitura acontece <strong style="font-weight:500;color:var(--color-text)">dentro do seu navegador</strong> — o arquivo não é enviado para nenhum servidor. Planograma, gôndolas e resumo são recalculados com os seus produtos.</p>
+          <p style="margin:0;max-width:720px;font-size:16px;color:color-mix(in srgb, var(--color-text) 64%, transparent)">Envie uma planilha .xlsx com o catálogo de SKUs. A leitura acontece <strong style="font-weight:500;color:var(--color-text)">dentro do seu navegador</strong>, sem enviar o arquivo para nenhum servidor. O planograma, as gôndolas e o resumo passam a usar os seus produtos.</p>
         </div>
         <div style="background:var(--color-surface);border-radius:14px;box-shadow:var(--shadow-sm);padding:12px">
           <div style="border:1.5px dashed color-mix(in srgb, var(--color-accent) 50%, transparent);border-radius:10px;padding:40px 32px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px">
@@ -704,7 +704,7 @@
       <input id="gira-arquivo-xlsx" type="file" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" onChange="{{ onArquivoChange }}" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">
     </main>
 
-    <footer class="gira-noprint" style="max-width:1320px;width:100%;margin:0 auto;box-sizing:border-box;padding:24px 48px 32px;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent);box-shadow:0 -1px 0 var(--color-divider)">GIRA — Especificação Funcional Fase 1 · Protótipo de referência: <a href="https://files.refinne.com.br/s/Yz9Dm4ReA9cYkNm" target="_blank" rel="noopener">GIRA_Simulacao_Brick_Antiacidos.xlsx</a> · Dados simulados (marcas fictícias, preços calibrados por PMC CMED).</footer>
+    <footer class="gira-noprint" style="max-width:1320px;width:100%;margin:0 auto;box-sizing:border-box;padding:24px 48px 32px;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent);box-shadow:0 -1px 0 var(--color-divider)">GIRA · Especificação Funcional Fase 1 · Protótipo de referência: <a href="https://files.refinne.com.br/s/Yz9Dm4ReA9cYkNm" target="_blank" rel="noopener">GIRA_Simulacao_Brick_Antiacidos.xlsx</a> · Dados simulados (marcas fictícias, preços calibrados por PMC CMED).</footer>
   </div>
 </div>
 </sc-if>
@@ -773,7 +773,7 @@ class Component extends DCLogic {
   };
   baixarCatalogo(skus, nome) {
     const XLSX = window.XLSX;
-    if (!XLSX) { this.setState({ importErro: ['Biblioteca de planilhas não carregou — recarregue a página.'] }); return; }
+    if (!XLSX) { this.setState({ importErro: ['Biblioteca de planilhas não carregou. Recarregue a página.'] }); return; }
     try { XLSX.writeFile(this.IMP.catalogoParaWorkbook(XLSX, skus), nome); }
     catch (err) { this.setState({ importErro: [`Não consegui gerar o arquivo: ${err.message}`] }); }
   }
@@ -827,21 +827,21 @@ class Component extends DCLogic {
     const P = this.state.params;
     return {
       participacaoBrick: ['Participação do brick no mercado nacional (%)', P.participacaoBrick * 100, 0.1, 'Principal driver do modelo: recalcula todos os volumes.', true],
-      pesoF1: ['Peso de atratividade — Farmácia 1 (cliente)', P.pesoF1, 0.1, 'Fator relativo de tráfego/conversão da farmácia cliente.', false],
-      pesoF2: ['Peso de atratividade — Farmácia 2', P.pesoF2, 0.1, 'Concorrente com maior fluxo no brick simulado.', false],
-      pesoF3: ['Peso de atratividade — Farmácia 3', P.pesoF3, 0.1, 'Farmácia menor / foco em preço.', false],
+      pesoF1: ['Peso de atratividade da Farmácia 1 (cliente)', P.pesoF1, 0.1, 'Fator relativo de tráfego/conversão da farmácia cliente.', false],
+      pesoF2: ['Peso de atratividade da Farmácia 2', P.pesoF2, 0.1, 'Concorrente com maior fluxo no brick simulado.', false],
+      pesoF3: ['Peso de atratividade da Farmácia 3', P.pesoF3, 0.1, 'Farmácia menor / foco em preço.', false],
       rampaEntrada: ['Rampa de entrada p/ SKU novo (%)', P.rampaEntrada * 100, 1, '% do fair share capturado no 1º ciclo ao incluir um SKU novo.', true],
       limAltoPotencial: ['Limite p/ "alto potencial" (UN/sem)', P.limAltoPotencial, 1, 'Acima disso, SKU ausente é prioridade de inclusão.', false],
       limMonitorar: ['Limite p/ "Monitorar" (UN/sem)', P.limMonitorar, 1, 'Piso intermediário: SKU entra como piloto.', false],
       minProjIncluir: ['Demanda projetada mínima p/ incluir (UN/sem)', P.minProjIncluir, 1, 'Projeção mínima de venda própria para justificar inclusão.', false],
       limRemover: ['Giro mínimo p/ permanecer no mix (UN/sem)', P.limRemover, 1, 'Abaixo disso, SKU já vendido é sinalizado para remoção.', false],
-      coberturaA: ['Cobertura-alvo — Classe A (semanas)', P.coberturaA, 1, 'Maior giro exige menos semanas de estoque.', false],
-      coberturaB: ['Cobertura-alvo — Classe B (semanas)', P.coberturaB, 1, 'Giro intermediário.', false],
-      coberturaC: ['Cobertura-alvo — Classe C (semanas)', P.coberturaC, 1, 'Menor giro exige mais semanas.', false],
-      corteA: ['Corte ABC — Classe A (%)', P.corteA * 100, 1, 'Pareto clássico (ex.: 80% da demanda acumulada).', true],
-      corteB: ['Corte ABC — Classe B (%)', P.corteB * 100, 1, 'Até este %: classe B; acima: classe C.', true],
-      margemExcesso: ['Margem de excesso (× cobertura-alvo)', P.margemExcesso, 0.05, 'Acima deste múltiplo → excesso.', false],
-      margemRuptura: ['Margem de ruptura (× cobertura-alvo)', P.margemRuptura, 0.05, 'Abaixo deste múltiplo → risco de ruptura.', false],
+      coberturaA: ['Cobertura-alvo da Classe A (semanas)', P.coberturaA, 1, 'Maior giro exige menos semanas de estoque.', false],
+      coberturaB: ['Cobertura-alvo da Classe B (semanas)', P.coberturaB, 1, 'Giro intermediário.', false],
+      coberturaC: ['Cobertura-alvo da Classe C (semanas)', P.coberturaC, 1, 'Menor giro exige mais semanas.', false],
+      corteA: ['Corte ABC da Classe A (%)', P.corteA * 100, 1, 'Pareto clássico (ex.: 80% da demanda acumulada).', true],
+      corteB: ['Corte ABC da Classe B (%)', P.corteB * 100, 1, 'Até este %: classe B; acima: classe C.', true],
+      margemExcesso: ['Margem de excesso (× cobertura-alvo)', P.margemExcesso, 0.05, 'Acima deste múltiplo, o estoque entra como excesso.', false],
+      margemRuptura: ['Margem de ruptura (× cobertura-alvo)', P.margemRuptura, 0.05, 'Abaixo deste múltiplo, o estoque entra como risco de ruptura.', false],
       semanasPorMes: ['Semanas por mês', P.semanasPorMes, 0.01, 'Projeta valores mensais a partir da demanda semanal.', false],
     };
   }
@@ -887,10 +887,10 @@ class Component extends DCLogic {
     const d = {
       sku: 'Identificador único do SKU (ex.: AC001). Liga o catálogo às demais abas.',
       marca: 'Fabricante / laboratório.', produto: 'Nome comercial exibido no planograma.',
-      forma: 'Forma farmacêutica — define a prateleira (PO EFEV, COM MAST, SUSP OR, PO SL).',
-      embalagem: 'Apresentação (ex.: FR PLAS X 100G).', atc: 'Categoria ATC — contexto da categoria.', ean: 'Código de barras (informativo).',
-      preco: 'Preço médio (R$) — ponte de receita e oportunidade de mix.', multiplo: 'Múltiplo de caixa — arredonda o pedido sugerido.',
-      estoque: 'Estoque atual (UN) — define ruptura x excesso.', pesoF1: 'Peso-base da Farmácia 1 (cliente) — principal calibrador da demanda.',
+      forma: 'Forma farmacêutica. Define a prateleira (PO EFEV, COM MAST, SUSP OR, PO SL).',
+      embalagem: 'Apresentação (ex.: FR PLAS X 100G).', atc: 'Categoria ATC. Contexto da categoria.', ean: 'Código de barras (informativo).',
+      preco: 'Preço médio (R$). Ponte de receita e oportunidade de mix.', multiplo: 'Múltiplo de caixa. Arredonda o pedido sugerido.',
+      estoque: 'Estoque atual (UN). Define ruptura x excesso.', pesoF1: 'Peso-base da Farmácia 1 (cliente). Principal calibrador da demanda.',
       pesoF2: 'Peso-base da Farmácia 2.', pesoF3: 'Peso-base da Farmácia 3.',
       vendasF1: 'Alternativa aos pesos: vendas observadas da F1 (UN/sem).', demandaTotal: 'Alternativa aos pesos: demanda total do brick (UN/sem).',
       foto: 'URL ou caminho da imagem (ex.: img/AC001.jpg).',
@@ -936,7 +936,7 @@ class Component extends DCLogic {
     const brGanho = { left: pc(p.receitaAtual), width: pc(p.ganhoInclusao), valor: fmtBRL(p.ganhoInclusao) };
     const brPerda = { left: pc(p.receitaAtual + p.ganhoInclusao - p.perdaRemocao), width: pc(p.perdaRemocao), valor: fmtBRL(p.perdaRemocao) };
     const brPot = { width: pc(p.receitaPotencial), valor: fmtBRL(p.receitaPotencial) };
-    const notaPonte = `Uplift de receita mensal projetado: ${fmtPct(p.uplift)}. O ganho soma apenas SKUs que passam a existir no mix (Incluir/Monitorar), com projeção por fair share + rampa de entrada — o share perdido em SKUs já vendidos é execução/competição e não entra nesta conta.`;
+    const notaPonte = `Uplift de receita mensal projetado: ${fmtPct(p.uplift)}. O ganho soma apenas SKUs que passam a existir no mix (Incluir/Monitorar), com projeção por fair share + rampa de entrada. O share perdido em SKUs já vendidos é execução/competição e fica fora desta conta.`;
 
     // Ações
     const nm = (l) => ({ nome: l.sk.produto, meta: `${l.sk.sku} · ${l.sk.marca}`, foto: this.thumb(l.sk.foto, l.sk.produto) });

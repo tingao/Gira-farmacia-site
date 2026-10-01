@@ -1,6 +1,6 @@
-/* GIRA — motor de cálculo. Porta 1:1 de js/engine.js do repo (módulos 3.4 Demanda do
- * Brick, 3.5 Match & Gap, 3.6 Planograma Sugerido, 3.7 Planograma Visual/Gôndolas,
- * 3.8 Resumo Executivo). Recalculável sob demanda. */
+/* GIRA: motor de cálculo. Mesmas fórmulas de js/engine.js do repo, cobrindo os módulos
+ * 3.4 Demanda do Brick, 3.5 Match & Gap, 3.6 Planograma Sugerido, 3.7 Planograma
+ * Visual/Gôndolas e 3.8 Resumo Executivo. Recalculável sob demanda. */
 import { MERCADO_NACIONAL, CLASSIFICACAO_INFO } from './gira-data.js';
 
 export function calcular(params, skus, estoques) {
@@ -68,15 +68,15 @@ export function calcular(params, skus, estoques) {
 
     let T;
     if (l.K === 'Remover') {
-      T = { tipo: 'nao-repor', texto: `Não repor — vender estoque restante (~${(S ?? 0).toFixed(1)} sem. de giro residual)` };
+      T = { tipo: 'nao-repor', texto: `Não repor. Vender o estoque restante (~${(S ?? 0).toFixed(1)} sem. de giro residual)` };
     } else if (l.D === 0) {
-      T = { tipo: 'entrada', texto: 'Sem estoque atual — pedido de entrada inicial' };
+      T = { tipo: 'entrada', texto: 'Sem estoque atual. Pedido de entrada inicial' };
     } else if (S > Q * s.margemExcesso) {
-      T = { tipo: 'excesso', texto: `Excesso de estoque (classe ${l.classe}, alvo ${Q} sem.) — pausar compra até normalizar` };
+      T = { tipo: 'excesso', texto: `Excesso de estoque (classe ${l.classe}, alvo ${Q} sem.). Pausar a compra até normalizar` };
     } else if (S < Q * s.margemRuptura) {
-      T = { tipo: 'ruptura', texto: `Risco de ruptura (classe ${l.classe}, alvo ${Q} sem.) — repor com urgência` };
+      T = { tipo: 'ruptura', texto: `Risco de ruptura (classe ${l.classe}, alvo ${Q} sem.). Repor com urgência` };
     } else {
-      T = { tipo: 'saudavel', texto: `Estoque saudável (classe ${l.classe}) — repor conforme padrão` };
+      T = { tipo: 'saudavel', texto: `Estoque saudável (classe ${l.classe}). Repor conforme o padrão` };
     }
 
     const U = (l.K === 'Não incluir' || l.K === 'Remover') ? 0 : Math.ceil(Math.max(0, R - l.estoque) / l.multiplo) * l.multiplo;
@@ -93,8 +93,8 @@ export function calcular(params, skus, estoques) {
     const gap = l.C - l.D;
     const oportunidadeSem = l.D > 0 ? 0 : l.W;
     const status = l.D === 0
-      ? (l.C >= s.limAltoPotencial ? 'Oportunidade de inclusão (alto potencial)' : 'Avaliar — baixo volume / lançamento')
-      : `No mix atual — share ${(share * 100).toFixed(1)}% (gap = concorrência, não é oportunidade de mix)`;
+      ? (l.C >= s.limAltoPotencial ? 'Oportunidade de inclusão (alto potencial)' : 'Avaliar: baixo volume ou lançamento')
+      : `No mix atual: share ${(share * 100).toFixed(1)}% (gap de execução/competição, fora da oportunidade de mix)`;
     return { ...l, share, gap, oportunidadeSem, oportunidadeMes: oportunidadeSem * s.semanasPorMes, status };
   });
 
@@ -139,8 +139,8 @@ export function filtrar(linhas, filtro) {
   });
 }
 
-/* --- 3.7 Gôndola física (merchandising): ranking por sortKey, split 40% nível dos
- * olhos / 30% topo / 30% base — mesma regra do protótipo de referência. --- */
+/* --- 3.7 Gôndola física (merchandising): ranking por sortKey, com 40% no nível dos
+ * olhos, 30% no topo e 30% na base, a mesma regra do protótipo de referência. --- */
 export function montarGondola(linhas, opts) {
   const ordenadas = [...linhas].sort((a, b) => (opts.sortKey(b) - opts.sortKey(a)) || a.sk.sku.localeCompare(b.sk.sku));
   const n = ordenadas.length;
@@ -196,7 +196,7 @@ export function padronizarColunas(gondolas) {
   return gondolas;
 }
 /* Facings uniformes por produto: todas as prateleiras exibem o mesmo número de
- * "rows" (imagens) por SKU — o volume de cada um continua visível no selo/badge. */
+ * "rows" (imagens) por SKU. O volume de cada um continua visível no selo/badge. */
 export const FACINGS_PADRAO = 2;
 export const faceEstoque = () => FACINGS_PADRAO;
 export const facePedido = () => FACINGS_PADRAO;

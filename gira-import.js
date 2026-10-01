@@ -1,4 +1,4 @@
-/* GIRA — importação de catálogo de produtos via planilha Excel (.xlsx / .xls).
+/* GIRA: importação de catálogo de produtos via planilha Excel (.xlsx / .xls).
  *
  * Tudo roda NO NAVEGADOR: o arquivo escolhido pelo usuário é lido com a
  * biblioteca SheetJS (vendor/xlsx.full.min.js) e convertido em registros de SKU
@@ -17,7 +17,7 @@
 export function normalizarHeader(valor) {
   if (valor === null || valor === undefined) return '';
   let s = String(valor);
-  s = s.replace(/\([^)]*\)?/g, ' '); // remove "(R$)", "(UN)", "(fictício)" — com ou sem fecha-parêntese
+  s = s.replace(/\([^)]*\)?/g, ' '); // remove "(R$)", "(UN)", "(fictício)", com ou sem fecha-parêntese
   s = s.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // remove acentos
   s = s.toLowerCase();
   s = s.replace(/[^a-z0-9]+/g, ' ').trim();
@@ -313,10 +313,10 @@ export function importarCatalogo(XLSX, arrayBuffer) {
   if (skus.length && somaPesos <= 0) {
     erros.push('A soma dos pesos-base ficou zero: inclua as colunas "Peso Base F1/F2/F3" (ou uma coluna de vendas/demanda) para o motor conseguir calibrar a demanda.');
   }
-  if (semPeso) assumicoes.push(`${semPeso} SKU(s) sem peso-base na planilha — usei vendas/demanda observada como peso relativo (ou peso uniforme quando não havia nenhuma das duas).`);
-  if (semEstoque) assumicoes.push(`${semEstoque} SKU(s) sem coluna de estoque — assumi estoque 0 (aparecem como risco de ruptura).`);
-  if (semPreco) avisos.push(`${semPreco} SKU(s) sem preço válido — assumi R$ 0,00 (a ponte de receita fica subestimada para eles).`);
-  if (semMultiplo) avisos.push(`${semMultiplo} SKU(s) sem múltiplo de caixa — assumi 1 UN.`);
+  if (semPeso) assumicoes.push(`${semPeso} SKU(s) sem peso-base na planilha. Usei as vendas ou a demanda observada como peso relativo (peso uniforme quando não havia nenhuma das duas).`);
+  if (semEstoque) assumicoes.push(`${semEstoque} SKU(s) sem coluna de estoque. Assumi estoque 0, então aparecem como risco de ruptura.`);
+  if (semPreco) avisos.push(`${semPreco} SKU(s) sem preço válido. Assumi R$ 0,00, o que subestima a ponte de receita nesses itens.`);
+  if (semMultiplo) avisos.push(`${semMultiplo} SKU(s) sem múltiplo de caixa. Assumi 1 UN.`);
   if (ignorados) avisos.push(`${ignorados} linha(s) sem SKU foram ignoradas.`);
 
   const ok = erros.length === 0;

@@ -1,5 +1,5 @@
-/* GIRA — dados de referência (extraídos de GIRA_Simulacao_Brick_Antiacidos.xlsx)
- * Porta 1:1 de js/data.js do repo tingao/Gira-farmacia-site — mesmos valores e fórmulas.
+/* GIRA: dados de referência, extraídos de GIRA_Simulacao_Brick_Antiacidos.xlsx.
+ * Mesmos valores e fórmulas de js/data.js do repo tingao/Gira-farmacia-site.
  * Nomes de marca e produto são fictícios; preços calibrados por PMC CMED. */
 
 export const BRICK = {
@@ -71,24 +71,24 @@ export const FORMA_LABEL = {
   'PO SL': 'Pó solúvel',
 };
 
-/* Classificação de decisão + Classe ABC + status de estoque: cores mapeadas para os
- * tokens do Broadsheet — cyan (accent) lê como sinal positivo/interativo, magenta
- * (accent-2) é o sinal de risco (ruptura, remoção); excesso usa o texto em magenta
+/* Classificação de decisão, Classe ABC e status de estoque: cores mapeadas para os
+ * tokens do Broadsheet. Cyan (accent) lê como sinal positivo ou interativo, magenta
+ * (accent-2) é o sinal de risco (ruptura, remoção) e excesso usa o texto em magenta
  * sobre neutro, mais discreto que um selo cheio, para não empatar com o crítico. */
 export const WARNING_STYLE = 'background:var(--color-neutral-100);color:var(--color-accent-2-700)';
 
 export const CLASSIFICACAO_INFO = {
-  Manter: { tag: 'tag tag-neutral', style: '', label: 'Manter', texto: 'Já no mix — manter e reabastecer' },
-  Incluir: { tag: 'tag tag-accent', style: '', label: 'Incluir', texto: 'Novo no mix — oportunidade validada pela demanda do brick' },
-  Monitorar: { tag: 'tag tag-outline', style: '', label: 'Monitorar', texto: 'Piloto pequeno / lançamento — avaliar giro antes de expandir espaço' },
-  'Não incluir': { tag: 'tag tag-neutral', style: '', label: 'Não incluir', texto: 'Baixo volume no brick — não justifica espaço de gôndola agora' },
-  Remover: { tag: 'tag tag-accent-2', style: '', label: 'Remover', texto: 'SKU de baixo giro, sem demanda validada no brick — remover e liberar espaço/capital' },
+  Manter: { tag: 'tag tag-neutral', style: '', label: 'Manter', texto: 'Já está no mix. Manter e reabastecer' },
+  Incluir: { tag: 'tag tag-accent', style: '', label: 'Incluir', texto: 'Novo no mix. Oportunidade validada pela demanda do brick' },
+  Monitorar: { tag: 'tag tag-outline', style: '', label: 'Monitorar', texto: 'Piloto pequeno ou lançamento. Avaliar o giro antes de expandir espaço' },
+  'Não incluir': { tag: 'tag tag-neutral', style: '', label: 'Não incluir', texto: 'Baixo volume no brick. Não justifica espaço de gôndola agora' },
+  Remover: { tag: 'tag tag-accent-2', style: '', label: 'Remover', texto: 'SKU de baixo giro, sem demanda validada no brick. Remover e liberar espaço e capital' },
 };
 
 export const ABC_INFO = {
-  A: { tag: 'tag tag-accent', style: '', label: 'A — alto giro' },
-  B: { tag: 'tag tag-outline', style: '', label: 'B — giro médio' },
-  C: { tag: 'tag tag-neutral', style: '', label: 'C — menor giro' },
+  A: { tag: 'tag tag-accent', style: '', label: 'A: alto giro' },
+  B: { tag: 'tag tag-outline', style: '', label: 'B: giro médio' },
+  C: { tag: 'tag tag-neutral', style: '', label: 'C: menor giro' },
 };
 
 export const ESTOQUE_INFO = {
