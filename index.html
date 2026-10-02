@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GIRA: controle de estoque e planograma · Demand Loop, Fase 1</title>
+<meta name="description" content="Planograma desejado para farmácias: demanda do brick, mix, estoque e pedido sugerido, recalculados SKU a SKU no navegador.">
+<link rel="stylesheet" href="vendor/fonts/inter.css">
+<!-- React e ReactDOM são servidos localmente: o runtime encontra window.React e não
+     busca no unpkg. Os arquivos conferem com os hashes SRI declarados em support.js. -->
+<script src="vendor/react.production.min.js"></script>
+<script src="vendor/react-dom.production.min.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
   <link rel="stylesheet" href="_ds/nocturne-9647b377-6605-4910-9f33-be6f5c0ba5eb/styles.css">
-  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="vendor/phosphor/regular/style.css">
   <script src="vendor/xlsx.full.min.js"></script>
   <style>
     body { margin: 0; }

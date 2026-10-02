@@ -1,5 +1,6 @@
 /* Nocturne — design-system tokens and component classes. This file is the source of truth for the system's look; retune it here and see readme.md. */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* A fonte Inter é servida localmente (vendor/fonts/inter.css, linkado no index.html),
+   para o site não depender do Google Fonts. */
 
 :root {
   --color-bg: #161826;
